@@ -11,6 +11,7 @@ const doc = new GoogleSpreadsheet(dotenv.GOOGLE_SHEET);
 let rows = [];
 
 client.on('message',async (message) => {
+    console.log('Detected',message);
     if (message.content.startsWith('<@!'+client.user.id+'>')) {
         let fullCommand = message.content.replace('<@!'+client.user.id+'> ','');
         let command = fullCommand.split(' ')[0];
