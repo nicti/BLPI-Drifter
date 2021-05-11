@@ -99,8 +99,8 @@ client.on('message',async (message) => {
                         await reactiveMsg.edit('~~Are you sure you want to reload all the data? This will delete saved data!~~ **Aborted!**');
                         await reactiveMsg.reactions.removeAll();
                     }
-                }).catch(() => {
-                    reactiveMsg.delete();
+                }).catch(async (error) => {
+                    await reactiveMsg.edit('~~Are you sure you want to reload all the data? This will delete saved data!~~ **Error**```'+error.toString()+'```');
                 });
                 break;
             case 'help':
