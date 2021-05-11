@@ -94,13 +94,13 @@ client.on('message',async (message) => {
                     if (collected.first().emoji.name == '✅') {
                         await reactiveMsg.reactions.removeAll();
                         await joveStorage.importFromGoogle();
-                        await reactiveMsg.edit('~~Are you sure you want to reload all the data? This will delete saved data!~~ **Done!**');
+                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Done!**');
                     }else if (collected.first().emoji.name == '❎') {
-                        await reactiveMsg.edit('~~Are you sure you want to reload all the data? This will delete saved data!~~ **Aborted!**');
+                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Aborted!**');
                         await reactiveMsg.reactions.removeAll();
                     }
                 }).catch(async (error) => {
-                    await reactiveMsg.edit('~~Are you sure you want to reload all the data? This will delete saved data!~~ **Error**```'+error.toString()+'```');
+                    await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Error:**```'+error.toString()+'```');
                 });
                 break;
             case 'help':
