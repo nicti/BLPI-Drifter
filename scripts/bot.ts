@@ -94,13 +94,13 @@ client.on('message',async (message) => {
                     if (collected.first().emoji.name == '✅') {
                         await reactiveMsg.reactions.removeAll();
                         await joveStorage.importFromGoogle();
-                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Done!**');
+                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~\n**Done!**');
                     }else if (collected.first().emoji.name == '❎') {
-                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Aborted!**');
+                        await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~\n**Aborted!**');
                         await reactiveMsg.reactions.removeAll();
                     }
                 }).catch(async (error) => {
-                    await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~ **Error:**```'+error.toString()+'```');
+                    await reactiveMsg.edit('~~'+(reactiveMsg.content)+'~~\n**Error:**```'+error.toString()+'```');
                 });
                 break;
             case 'help':

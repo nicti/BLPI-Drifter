@@ -22,6 +22,7 @@ export default class JoveStorage {
         const drifterInfo = await drifterSheet.getCellsInRange('A9:AO72');
         for (let i = 0; i < drifterInfo.length; i++) {
             let drifterRegion = drifterInfo[i];
+            console.log(drifterRegion);
             drifterRegion.splice(-1,1);
             let region = drifterRegion.shift().replaceAll(' ','_');
             let systems = {};
