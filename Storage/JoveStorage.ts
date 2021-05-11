@@ -24,6 +24,7 @@ export default class JoveStorage {
             let drifterRegion = drifterInfo[i];
             console.log(drifterRegion);
             drifterRegion.splice(-1,1);
+            console.log(drifterRegion);
             let region = drifterRegion.shift().replaceAll(' ','_');
             let systems = {};
             for (let j = 0; j < drifterRegion.length; j++) {
