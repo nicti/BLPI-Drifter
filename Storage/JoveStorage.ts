@@ -27,7 +27,7 @@ export default class JoveStorage {
             region = region.replace(/ /g,'_');
             let systems = {};
             for (let j = 0; j < drifterRegion.length; j++) {
-                const drifterSystem = drifterRegion[j].replaceAll(' ','_');
+                const drifterSystem = drifterRegion[j].replace(/ /g,'_');
                 systems[drifterSystem] = {
                     updated: '',
                     whs: []

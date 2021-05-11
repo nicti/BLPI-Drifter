@@ -43,7 +43,7 @@ client.on('message',async (message) => {
                     break;
                 }
                 let region = (await esi.get('/v1/universe/regions/'+searchResults[0]+'/')).data;
-                let regionName = region.name.replaceAll(' ','_');
+                let regionName = region.name.replace(/ /g,'_');
                 await joveStorage.resetOutdated();
                 let joveRegionalInfo = await joveStorage.getForRegion(regionName);
                 let str = '';
