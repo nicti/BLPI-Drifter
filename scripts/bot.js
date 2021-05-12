@@ -212,7 +212,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     resultMessage += 'Stable ' + find + ' WHs:```' + stableReturns.join("\n") + '```';
                 }
                 if (unstableReturns.length > 0) {
-                    resultMessage += '```Unstable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
+                    resultMessage += 'Unstable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
                 }
                 return [4 /*yield*/, message.channel.send(resultMessage)];
             case 29:

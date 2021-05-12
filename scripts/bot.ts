@@ -126,7 +126,7 @@ client.on('message',async (message) => {
                     resultMessage += 'Stable '+find+' WHs:```'+stableReturns.join("\n")+'```';
                 }
                 if (unstableReturns.length > 0) {
-                    resultMessage += '```Unstable '+find+' WHs:```'+unstableReturns.join("\n")+'```';
+                    resultMessage += 'Unstable '+find+' WHs:```'+unstableReturns.join("\n")+'```';
                 }
                 await message.channel.send(resultMessage);
                 break;
