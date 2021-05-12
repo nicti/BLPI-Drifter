@@ -1,6 +1,7 @@
-import { JsonDB } from 'node-json-db';
+import {JsonDB} from 'node-json-db';
 import {GoogleSpreadsheet} from "google-spreadsheet";
-import { config } from 'dotenv';
+import {config} from 'dotenv';
+
 config();
 
 
@@ -9,23 +10,31 @@ export default class JoveStorage {
         'B','C','V','S','R','-',
         'B-','C-','V-','S-','R-'
     ];
+    static WHS = [
+        'B','C','V','S','R'
+    ];
     db: JsonDB;
     constructor() {
         this.db = new JsonDB('jove.json');
     }
 
-    public async importFromGoogle(): Promise<boolean> {
-        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET);
-        await doc.useApiKey(process.env.GOOGLE_API);
+    public async importFromGoogle(): Promise<boolean|string> {
+        const {GOOGLE_API, GOOGLE_SHEET} = process.env;
+        if (typeof GOOGLE_API === "undefined" || typeof GOOGLE_SHEET === "undefined") {
+            return "Please make sure GOOGLE_API and GOOGLE_SHEET are defined in .env!";
+        }
+        const doc = new GoogleSpreadsheet(GOOGLE_SHEET);
+        await doc.useApiKey(GOOGLE_API);
         await doc.loadInfo();
         const drifterSheet = doc.sheetsByIndex[0];
+        // @ts-ignore Needs to be this call due to missing header in 3rd party sheet.
         const drifterInfo = await drifterSheet.getCellsInRange('A9:AO72');
         for (let i = 0; i < drifterInfo.length; i++) {
             let drifterRegion = drifterInfo[i];
             drifterRegion.splice(-1,1);
             let region = drifterRegion.shift();
             region = region.replace(/ /g,'_');
-            let systems = {};
+            let  systems: {[index: string]: any} = {};
             for (let j = 0; j < drifterRegion.length; j++) {
                 const drifterSystem = drifterRegion[j].replace(/ /g,'_');
                 systems[drifterSystem] = {
@@ -64,7 +73,7 @@ export default class JoveStorage {
         }
     }
 
-    public async setWHs(system: string, whs: []|[string]): Promise<string | boolean> {
+    public async setWHs(system: string, whs: []|string[]): Promise<string | boolean> {
         for (let i = 0; i < whs.length; i++) {
             let wh = whs[i];
             if (!JoveStorage.POSSIBLE_VALUES.includes(wh)) {
@@ -85,5 +94,38 @@ export default class JoveStorage {
             }
         }
         return 'Could not find system in jove list';
+    }
+
+    public async findByType(type: string): Promise<any> {
+        let returns: any = {
+            stable: [],
+            unstable: []
+        };
+        let regions = await this.db.getData('region');
+        for (const regionKey in regions) {
+            if (regions.hasOwnProperty(regionKey)) {
+                let region = regions[regionKey];
+                for (const systemKey in region) {
+                    if (region.hasOwnProperty(systemKey)) {
+                        let entry: any = region[systemKey];
+                        if (entry.whs.includes(type)) {
+                            returns.stable.push({
+                                region: regionKey,
+                                system: systemKey,
+                                updated: entry.updated
+                            });
+                        }
+                        if (entry.whs.includes(type+'-')) {
+                            returns.unstable.push({
+                                region: regionKey,
+                                system: systemKey,
+                                updated: entry.updated
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        return returns;
     }
 }
