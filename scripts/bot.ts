@@ -1,9 +1,15 @@
 import {Client, MessageEmbed, Snowflake} from "discord.js";
 import axios from "axios";
 import JoveStorage from "../Storage/JoveStorage";
+import Universe from "../EVE/Universe";
 import {config} from "dotenv";
 config();
 const client = new Client();
+
+const universe = new Universe();
+universe.buildRegionCache();
+universe.buildConstellationCache();
+universe.buildSystemCache();
 
 const esi = axios.create({
     baseURL: 'https://esi.evetech.net',
