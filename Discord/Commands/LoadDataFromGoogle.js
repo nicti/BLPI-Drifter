@@ -1,4 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,54 +54,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var discord_js_1 = require("discord.js");
-var axios_1 = __importDefault(require("axios"));
-var JoveStorage_1 = __importDefault(require("../Storage/JoveStorage"));
-var dotenv_1 = require("dotenv");
-var Commands_1 = __importDefault(require("../Discord/Commands"));
-dotenv_1.config();
-var client = new discord_js_1.Client();
-var joveStorage = new JoveStorage_1.default();
-joveStorage.resetOutdated().then();
-var esi = axios_1.default.create({
-    baseURL: 'https://esi.evetech.net',
-});
-var commandHandler = new Commands_1.default(client, esi, joveStorage);
-client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    var botClientId;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                botClientId = (_a = client.user) === null || _a === void 0 ? void 0 : _a.id;
-                if (typeof botClientId === "undefined") {
-                    console.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');
-                    return [2 /*return*/];
+var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var LoadDataFromGoogle = /** @class */ (function (_super) {
+    __extends(LoadDataFromGoogle, _super);
+    function LoadDataFromGoogle() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    LoadDataFromGoogle.prototype.execute = function (message, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var allowed, msg;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Are you sure you want to reload all the data? This will delete saved data!')];
+                    case 1:
+                        allowed = _a.sent();
+                        if (!allowed) return [3 /*break*/, 5];
+                        return [4 /*yield*/, message.channel.send('Starting import...')];
+                    case 2:
+                        msg = _a.sent();
+                        return [4 /*yield*/, this.jove.importFromGoogle()];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, msg.edit(msg.content + ' **DONE**')];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
                 }
-                if (message.author.id === botClientId) {
-                    return [2 /*return*/];
-                }
-                if (!(process.env.NODE_ENV === "production" && message.channel.type === 'dm')) return [3 /*break*/, 2];
-                return [4 /*yield*/, message.channel.send('Please only contact me via registered channels!')];
-            case 1:
-                _b.sent();
-                return [2 /*return*/];
-            case 2:
-                if (typeof process.env.ALLOWED_CHANNELS === "undefined") {
-                    console.error('ALLOWED_CHANNELS has to be defined in .env!');
-                    return [2 /*return*/];
-                }
-                if (process.env.NODE_ENV === "production" && !process.env.ALLOWED_CHANNELS.split(',').includes(message.channel.id)) {
-                    return [2 /*return*/];
-                }
-                else if (process.env.NODE_ENV === "develop" && message.channel.type !== 'dm') {
-                    return [2 /*return*/];
-                }
-                if (message.content.startsWith('<@!' + botClientId + '>')) {
-                    return [2 /*return*/, commandHandler.processMessage(message)];
-                }
-                return [2 /*return*/];
-        }
-    });
-}); });
-client.login(process.env.BOT_TOKEN).then().catch(console.error);
+            });
+        });
+    };
+    LoadDataFromGoogle.prototype.help = function () {
+        return { name: "`loadDataFromGoogle`", value: "Reloads drifter data from Google Spreadsheet. This does delete all previously gathered data." };
+    };
+    return LoadDataFromGoogle;
+}(CommandInterface_1.default));
+exports.default = LoadDataFromGoogle;

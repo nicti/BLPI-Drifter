@@ -134,7 +134,7 @@ var JoveStorage = /** @class */ (function () {
                         if (!systems.hasOwnProperty(systemsKey)) return [3 /*break*/, 5];
                         system = systems[systemsKey];
                         diff = (currentTime - system.updated);
-                        if (!(diff > (1000 * 60 * 60 * 24))) return [3 /*break*/, 5];
+                        if (!(diff > (1000 * 60 * 60 * 16))) return [3 /*break*/, 5];
                         return [4 /*yield*/, this.db.push('region/' + regionsKey + '/' + systemsKey, {
                                 updated: '',
                                 whs: []
