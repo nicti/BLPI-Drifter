@@ -1,0 +1,26 @@
+import CommandInterface from "./CommandInterface";
+import {Message} from "discord.js";
+
+export default class Set extends CommandInterface {
+
+    async execute(message: Message, data: string[]): Promise<any> {
+        if (data.length != 2) {
+            await message.channel.send('Your message did not follow the pattern. Usage: `@BLPI Drifter set <system> <pipe split drifter letters>`')
+            return;
+        }
+        let system = data[0];
+        let whs = data[1];
+        let result = await this.jove.setWHs(system, whs.split('|'));
+        if (result === true) {
+            await message.react('✅');
+        } else if (typeof result === 'string') {
+            await message.reply(result);
+        }
+        return;
+    }
+
+    help(): { name: string; value: string } {
+        return {name: "`set <system> <pipe split WH identifier>`", value: "Sets drifter info for a certain system. Use letter for WH identifier. Concat - for EOL/crit. E.g.: `set Jita C|C-`"};
+    }
+
+}

@@ -61,7 +61,7 @@ export default class JoveStorage {
                     if (systems.hasOwnProperty(systemsKey)) {
                         let system = systems[systemsKey];
                         let diff = (currentTime - system.updated);
-                        if (diff > (1000*60*60*24)) {
+                        if (diff > (1000*60*60*16)) {
                             await this.db.push('region/'+regionsKey+'/'+systemsKey,{
                                 updated: '',
                                 whs: []
