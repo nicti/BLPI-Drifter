@@ -7,18 +7,19 @@ config();
 
 export default class JoveStorage {
     static POSSIBLE_VALUES = [
-        'B','C','V','S','R','-',
-        'B-','C-','V-','S-','R-'
+        'B', 'C', 'V', 'S', 'R', '-',
+        'B-', 'C-', 'V-', 'S-', 'R-'
     ];
     static WHS = [
-        'B','C','V','S','R'
+        'B', 'C', 'V', 'S', 'R'
     ];
     db: JsonDB;
+
     constructor() {
         this.db = new JsonDB('jove.json');
     }
 
-    public async importFromGoogle(): Promise<boolean|string> {
+    public async importFromGoogle(): Promise<boolean | string> {
         const {GOOGLE_API, GOOGLE_SHEET} = process.env;
         if (typeof GOOGLE_API === "undefined" || typeof GOOGLE_SHEET === "undefined") {
             return "Please make sure GOOGLE_API and GOOGLE_SHEET are defined in .env!";
@@ -31,48 +32,59 @@ export default class JoveStorage {
         const drifterInfo = await drifterSheet.getCellsInRange('A9:AO72');
         for (let i = 0; i < drifterInfo.length; i++) {
             let drifterRegion = drifterInfo[i];
-            drifterRegion.splice(-1,1);
+            drifterRegion.splice(-1, 1);
             let region = drifterRegion.shift();
-            region = region.replace(/ /g,'_');
-            let  systems: {[index: string]: any} = {};
+            region = region.replace(/ /g, '_');
+            let systems: { [index: string]: any } = {};
             for (let j = 0; j < drifterRegion.length; j++) {
-                const drifterSystem = drifterRegion[j].replace(/ /g,'_');
+                const drifterSystem = drifterRegion[j].replace(/ /g, '_');
                 systems[drifterSystem] = {
                     updated: '',
                     whs: []
                 };
             }
-            await this.db.push('region/'+region, systems);
+            await this.db.push('region/' + region, systems);
         }
         return true;
     }
 
     public async getForRegion(region: string): Promise<any> {
-        return await this.db.getData('region/'+region);
+        return await this.db.getData('region/' + region);
     }
 
-    public async resetOutdated() {
+    public async resetOutdated(region: string | null = null) {
+        if (region === null) {
+            let regions = await this.db.getData('region');
+            for (const regionsKey in regions) {
+                if (regions.hasOwnProperty(regionsKey)) {
+                    let systems = regions[regionsKey];
+                    await this.resetOutdatedRegion(regionsKey, systems);
+                }
+            }
+        } else if ((await this.db.exists('region/' + region))) {
+            let systems = await this.db.getData('region/' + region);
+            await this.resetOutdatedRegion(region, systems);
+        } else {
+            console.error('Region ' + region + ' not found in database!');
+        }
+    }
+
+    private async resetOutdatedRegion(region: string, systems: any[]) {
         let currentTime = (new Date).valueOf();
-        let regions = await this.db.getData('region');
-        for (const regionsKey in regions) {
-            if (regions.hasOwnProperty(regionsKey)) {
-                let systems = regions[regionsKey];
-                for (const systemsKey in systems) {
-                    if (systems.hasOwnProperty(systemsKey)) {
-                        let system = systems[systemsKey];
-                        let diff = (currentTime - system.updated);
-                        if (diff > (1000*60*60*16)) {
-                            await this.db.push('region/'+regionsKey+'/'+systemsKey,{
-                                updated: '',
-                                whs: []
-                            });
-                        } else {
-                            if (system.whs.filter((wh: string) => wh.match(/[BCVSR]-/)) && diff > (1000*60*60*4)) {
-                                for (let i = 0; i < system.whs.length; i++) {
-                                    if (system.whs[i].match(/[BCVSR]-/)) {
-                                        system.whs.splice(i,1);
-                                    }
-                                }
+        for (const systemsKey in systems) {
+            if (systems.hasOwnProperty(systemsKey)) {
+                let system = systems[systemsKey];
+                let diff = (currentTime - system.updated);
+                if (diff > (1000 * 60 * 60 * 16)) {
+                    await this.db.push('region/' + region + '/' + systemsKey, {
+                        updated: '',
+                        whs: []
+                    });
+                } else {
+                    if (system.whs.filter((wh: string) => wh.match(/[BCVSR]-/)) && diff > (1000 * 60 * 60 * 4)) {
+                        for (let i = 0; i < system.whs.length; i++) {
+                            if (system.whs[i].match(/[BCVSR]-/)) {
+                                system.whs.splice(i, 1);
                             }
                         }
                     }
@@ -81,11 +93,11 @@ export default class JoveStorage {
         }
     }
 
-    public async setWHs(system: string, whs: []|string[]): Promise<string | boolean> {
+    public async setWHs(system: string, whs: [] | string[]): Promise<string | boolean> {
         for (let i = 0; i < whs.length; i++) {
             let wh = whs[i];
             if (!JoveStorage.POSSIBLE_VALUES.includes(wh)) {
-                return 'Undefined WH identifier: '+wh;
+                return 'Undefined WH identifier: ' + wh;
             }
         }
         if (whs.length === 1 && whs[0] === '-') {
@@ -94,7 +106,7 @@ export default class JoveStorage {
         let regions = await this.db.getData('region');
         for (const regionsKey in regions) {
             if (regions.hasOwnProperty(regionsKey) && regions[regionsKey].hasOwnProperty(system)) {
-                await this.db.push('region/'+regionsKey+'/'+system,{
+                await this.db.push('region/' + regionsKey + '/' + system, {
                     updated: (new Date()).valueOf(),
                     whs: whs
                 });
@@ -123,7 +135,7 @@ export default class JoveStorage {
                                 updated: entry.updated
                             });
                         }
-                        if (entry.whs.includes(type+'-')) {
+                        if (entry.whs.includes(type + '-')) {
                             returns.unstable.push({
                                 region: regionKey,
                                 system: systemKey,

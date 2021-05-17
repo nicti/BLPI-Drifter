@@ -103,46 +103,80 @@ var JoveStorage = /** @class */ (function () {
             });
         });
     };
-    JoveStorage.prototype.resetOutdated = function () {
+    JoveStorage.prototype.resetOutdated = function (region) {
+        if (region === void 0) { region = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var currentTime, regions, _a, _b, _i, regionsKey, systems, _c, _d, _e, systemsKey, system, diff, i;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
+            var regions, _a, _b, _i, regionsKey, systems, systems;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        currentTime = (new Date).valueOf();
+                        if (!(region === null)) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.db.getData('region')];
                     case 1:
-                        regions = _f.sent();
+                        regions = _c.sent();
                         _a = [];
                         for (_b in regions)
                             _a.push(_b);
                         _i = 0;
-                        _f.label = 2;
+                        _c.label = 2;
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 8];
+                        if (!(_i < _a.length)) return [3 /*break*/, 5];
                         regionsKey = _a[_i];
-                        if (!regions.hasOwnProperty(regionsKey)) return [3 /*break*/, 7];
+                        if (!regions.hasOwnProperty(regionsKey)) return [3 /*break*/, 4];
                         systems = regions[regionsKey];
-                        _c = [];
-                        for (_d in systems)
-                            _c.push(_d);
-                        _e = 0;
-                        _f.label = 3;
+                        return [4 /*yield*/, this.resetOutdatedRegion(regionsKey, systems)];
                     case 3:
-                        if (!(_e < _c.length)) return [3 /*break*/, 7];
-                        systemsKey = _c[_e];
-                        if (!systems.hasOwnProperty(systemsKey)) return [3 /*break*/, 6];
+                        _c.sent();
+                        _c.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [3 /*break*/, 11];
+                    case 6: return [4 /*yield*/, this.db.exists('region/' + region)];
+                    case 7:
+                        if (!(_c.sent())) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.db.getData('region/' + region)];
+                    case 8:
+                        systems = _c.sent();
+                        return [4 /*yield*/, this.resetOutdatedRegion(region, systems)];
+                    case 9:
+                        _c.sent();
+                        return [3 /*break*/, 11];
+                    case 10:
+                        console.error('Region ' + region + ' not found in database!');
+                        _c.label = 11;
+                    case 11: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    JoveStorage.prototype.resetOutdatedRegion = function (region, systems) {
+        return __awaiter(this, void 0, void 0, function () {
+            var currentTime, _a, _b, _i, systemsKey, system, diff, i;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        currentTime = (new Date).valueOf();
+                        _a = [];
+                        for (_b in systems)
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                        systemsKey = _a[_i];
+                        if (!systems.hasOwnProperty(systemsKey)) return [3 /*break*/, 4];
                         system = systems[systemsKey];
                         diff = (currentTime - system.updated);
-                        if (!(diff > (1000 * 60 * 60 * 16))) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.db.push('region/' + regionsKey + '/' + systemsKey, {
+                        if (!(diff > (1000 * 60 * 60 * 16))) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.db.push('region/' + region + '/' + systemsKey, {
                                 updated: '',
                                 whs: []
                             })];
-                    case 4:
-                        _f.sent();
-                        return [3 /*break*/, 6];
-                    case 5:
+                    case 2:
+                        _c.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
                         if (system.whs.filter(function (wh) { return wh.match(/[BCVSR]-/); }) && diff > (1000 * 60 * 60 * 4)) {
                             for (i = 0; i < system.whs.length; i++) {
                                 if (system.whs[i].match(/[BCVSR]-/)) {
@@ -150,14 +184,11 @@ var JoveStorage = /** @class */ (function () {
                                 }
                             }
                         }
-                        _f.label = 6;
-                    case 6:
-                        _e++;
-                        return [3 /*break*/, 3];
-                    case 7:
+                        _c.label = 4;
+                    case 4:
                         _i++;
-                        return [3 /*break*/, 2];
-                    case 8: return [2 /*return*/];
+                        return [3 /*break*/, 1];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

@@ -90,7 +90,7 @@ var Show = /** @class */ (function (_super) {
                     case 8:
                         region = (_a.sent()).data;
                         regionName = region.name.replace(/ /g, '_');
-                        return [4 /*yield*/, this.jove.resetOutdated()];
+                        return [4 /*yield*/, this.jove.resetOutdated(regionName)];
                     case 9:
                         _a.sent();
                         return [4 /*yield*/, this.jove.getForRegion(regionName)];

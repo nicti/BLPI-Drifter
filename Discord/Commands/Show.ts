@@ -19,7 +19,7 @@ export default class Show extends CommandInterface {
         }
         let region = (await this.esi.get('/v1/universe/regions/'+searchResults[0]+'/')).data;
         let regionName = region.name.replace(/ /g,'_');
-        await this.jove.resetOutdated();
+        await this.jove.resetOutdated(regionName);
         let joveRegionalInfo = await this.jove.getForRegion(regionName);
         let str = '';
         let link = [];
