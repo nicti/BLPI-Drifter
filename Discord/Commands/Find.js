@@ -101,7 +101,7 @@ var Find = /** @class */ (function (_super) {
                             resultMessage += 'Stable ' + find + ' WHs:```' + stableReturns.join("\n") + '```';
                         }
                         if (unstableReturns.length > 0) {
-                            resultMessage += 'Unstable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
+                            resultMessage += '**Un**stable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
                         }
                         return [4 /*yield*/, message.channel.send(resultMessage)];
                     case 5:
@@ -112,7 +112,7 @@ var Find = /** @class */ (function (_super) {
         });
     };
     Find.prototype.help = function () {
-        return { name: "`find <WH identifier>`", value: "Finds al WHs of a certain type" };
+        return { name: "`find <WH identifier>`", value: "Finds all WHs of a certain type" };
     };
     return Find;
 }(CommandInterface_1.default));

@@ -66,6 +66,14 @@ export default class JoveStorage {
                                 updated: '',
                                 whs: []
                             });
+                        } else {
+                            if (system.whs.filter((wh: string) => wh.match(/[BCVSR]-/)) && diff > (1000*60*60*4)) {
+                                for (let i = 0; i < system.whs.length; i++) {
+                                    if (system.whs[i].match(/[BCVSR]-/)) {
+                                        system.whs.splice(i,1);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

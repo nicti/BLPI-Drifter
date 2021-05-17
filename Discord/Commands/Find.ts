@@ -36,13 +36,13 @@ export default class Find extends CommandInterface
             resultMessage += 'Stable ' + find + ' WHs:```' + stableReturns.join("\n") + '```';
         }
         if (unstableReturns.length > 0) {
-            resultMessage += 'Unstable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
+            resultMessage += '**Un**stable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
         }
         await message.channel.send(resultMessage);
     }
 
     help(): { name: string; value: string } {
-        return {name: "`find <WH identifier>`", value: "Finds al WHs of a certain type"};
+        return {name: "`find <WH identifier>`", value: "Finds all WHs of a certain type"};
     }
 
 }

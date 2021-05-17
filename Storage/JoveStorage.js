@@ -105,7 +105,7 @@ var JoveStorage = /** @class */ (function () {
     };
     JoveStorage.prototype.resetOutdated = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var currentTime, regions, _a, _b, _i, regionsKey, systems, _c, _d, _e, systemsKey, system, diff;
+            var currentTime, regions, _a, _b, _i, regionsKey, systems, _c, _d, _e, systemsKey, system, diff, i;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
@@ -119,9 +119,9 @@ var JoveStorage = /** @class */ (function () {
                         _i = 0;
                         _f.label = 2;
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 7];
+                        if (!(_i < _a.length)) return [3 /*break*/, 8];
                         regionsKey = _a[_i];
-                        if (!regions.hasOwnProperty(regionsKey)) return [3 /*break*/, 6];
+                        if (!regions.hasOwnProperty(regionsKey)) return [3 /*break*/, 7];
                         systems = regions[regionsKey];
                         _c = [];
                         for (_d in systems)
@@ -129,9 +129,9 @@ var JoveStorage = /** @class */ (function () {
                         _e = 0;
                         _f.label = 3;
                     case 3:
-                        if (!(_e < _c.length)) return [3 /*break*/, 6];
+                        if (!(_e < _c.length)) return [3 /*break*/, 7];
                         systemsKey = _c[_e];
-                        if (!systems.hasOwnProperty(systemsKey)) return [3 /*break*/, 5];
+                        if (!systems.hasOwnProperty(systemsKey)) return [3 /*break*/, 6];
                         system = systems[systemsKey];
                         diff = (currentTime - system.updated);
                         if (!(diff > (1000 * 60 * 60 * 16))) return [3 /*break*/, 5];
@@ -141,14 +141,23 @@ var JoveStorage = /** @class */ (function () {
                             })];
                     case 4:
                         _f.sent();
-                        _f.label = 5;
+                        return [3 /*break*/, 6];
                     case 5:
+                        if (system.whs.filter(function (wh) { return wh.match(/[BCVSR]-/); }) && diff > (1000 * 60 * 60 * 4)) {
+                            for (i = 0; i < system.whs.length; i++) {
+                                if (system.whs[i].match(/[BCVSR]-/)) {
+                                    system.whs.splice(i, 1);
+                                }
+                            }
+                        }
+                        _f.label = 6;
+                    case 6:
                         _e++;
                         return [3 /*break*/, 3];
-                    case 6:
+                    case 7:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 7: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
