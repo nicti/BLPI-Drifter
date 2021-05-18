@@ -67,7 +67,7 @@ var Find = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        find = data[0];
+                        find = data[0].toUpperCase();
                         if (!!JoveStorage_1.default.WHS.includes(find)) return [3 /*break*/, 2];
                         return [4 /*yield*/, message.reply('Insert correct wh type please: B,C,V,S,R')];
                     case 1:

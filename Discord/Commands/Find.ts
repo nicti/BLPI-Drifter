@@ -6,7 +6,7 @@ export default class Find extends CommandInterface
 {
 
     async execute(message: Message, data: string[]): Promise<any> {
-        let find = data[0];
+        let find = data[0].toUpperCase();
         if (!JoveStorage.WHS.includes(find)) {
             await message.reply('Insert correct wh type please: B,C,V,S,R');
             return;
