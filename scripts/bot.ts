@@ -24,7 +24,7 @@ setInterval(async () => {
         ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2,'0') + ' UTC';
     client.user?.setActivity({
         type: 'WATCHING',
-        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth.description} | Updated: ${dateString}`
+        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Updated: ${dateString}`
     });
 },1000*60);
 
