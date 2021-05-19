@@ -44,6 +44,7 @@ var Show_1 = __importDefault(require("./Commands/Show"));
 var Set_1 = __importDefault(require("./Commands/Set"));
 var Find_1 = __importDefault(require("./Commands/Find"));
 var LoadDataFromGoogle_1 = __importDefault(require("./Commands/LoadDataFromGoogle"));
+var Health_1 = __importDefault(require("./Commands/Health"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove) {
         this.client = client;
@@ -54,6 +55,7 @@ var Commands = /** @class */ (function () {
         this.commands.set('set', (new Set_1.default(this.esi, this.jove)));
         this.commands.set('find', (new Find_1.default(this.esi, this.jove)));
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove)));
+        this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.client)));
     }
     Commands.prototype.processMessage = function (message) {
         var _a, _b;

@@ -44,6 +44,7 @@ var axios_1 = __importDefault(require("axios"));
 var JoveStorage_1 = __importDefault(require("../Storage/JoveStorage"));
 var dotenv_1 = require("dotenv");
 var Commands_1 = __importDefault(require("../Discord/Commands"));
+var Pings_1 = __importDefault(require("../Bot/Pings"));
 dotenv_1.config();
 var client = new discord_js_1.Client();
 var joveStorage = new JoveStorage_1.default();
@@ -52,6 +53,31 @@ var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
 });
 var commandHandler = new Commands_1.default(client, esi, joveStorage);
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/];
+    });
+}); })();
+setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var data, esiHealth, dateObj, dateString;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, Pings_1.default.statusAll(client)];
+            case 1:
+                data = _b.sent();
+                esiHealth = Math.round(((data.esiHealth.green / data.esiHealth.total) * 100)) + '%';
+                dateObj = new Date();
+                dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                    ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
+                    type: 'WATCHING',
+                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth.description + " | Updated: " + dateString
+                });
+                return [2 /*return*/];
+        }
+    });
+}); }, 1000 * 60);
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
     var botClientId;
     var _a;
@@ -89,4 +115,23 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-client.login(process.env.BOT_TOKEN).then().catch(console.error);
+client.login(process.env.BOT_TOKEN).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var data, esiHealth, dateObj, dateString;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, Pings_1.default.statusAll(client)];
+            case 1:
+                data = _b.sent();
+                esiHealth = Math.round(((data.esiHealth.green / data.esiHealth.total) * 100)) + '%';
+                dateObj = new Date();
+                dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                    ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
+                    type: 'WATCHING',
+                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Updated: " + dateString
+                });
+                return [2 /*return*/];
+        }
+    });
+}); }).catch(console.error);

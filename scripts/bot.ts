@@ -3,6 +3,7 @@ import axios from "axios";
 import JoveStorage from "../Storage/JoveStorage";
 import {config} from "dotenv";
 import Commands from "../Discord/Commands";
+import Pings from "../Bot/Pings";
 
 config();
 const client = new Client();
@@ -12,6 +13,20 @@ const esi = axios.create({
     baseURL: 'https://esi.evetech.net',
 });
 const commandHandler = new Commands(client, esi, joveStorage);
+
+(async () => {
+})();
+setInterval(async () => {
+    let data = await Pings.statusAll(client);
+    let esiHealth = Math.round(((data.esiHealth.green/data.esiHealth.total)*100))+'%';
+    let dateObj = new Date();
+    let dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+        ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2,'0') + ' UTC';
+    client.user?.setActivity({
+        type: 'WATCHING',
+        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth.description} | Updated: ${dateString}`
+    });
+},1000*60);
 
 
 client.on('message', async (message: Message) => {
@@ -40,4 +55,14 @@ client.on('message', async (message: Message) => {
         return commandHandler.processMessage(message);
     }
 });
-client.login(process.env.BOT_TOKEN).then().catch(console.error);
+client.login(process.env.BOT_TOKEN).then(async () => {
+    let data = await Pings.statusAll(client);
+    let esiHealth = Math.round(((data.esiHealth.green/data.esiHealth.total)*100))+'%';
+    let dateObj = new Date();
+    let dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+        ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2,'0') + ' UTC';
+    client.user?.setActivity({
+        type: 'WATCHING',
+        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Updated: ${dateString}`
+    });
+}).catch(console.error);
