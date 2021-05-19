@@ -41,7 +41,7 @@ export default class Health extends CommandInterface {
     }
 
     help(): { name: string; value: string } {
-        return {name: "health", value: "Reports health of connected APIs"};
+        return {name: "`health`", value: "Reports health of connected APIs"};
     }
 
 

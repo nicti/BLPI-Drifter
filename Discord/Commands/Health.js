@@ -105,7 +105,7 @@ var Health = /** @class */ (function (_super) {
         });
     };
     Health.prototype.help = function () {
-        return { name: "health", value: "Reports health of connected APIs" };
+        return { name: "`health`", value: "Reports health of connected APIs" };
     };
     return Health;
 }(CommandInterface_1.default));

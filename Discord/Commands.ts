@@ -36,9 +36,11 @@ export default class Commands {
             if (typeof executeObject !== "undefined") {
                 await executeObject.execute(message, splitData);
             } else {
+                console.log('Unknown command: ' + message.author.username + ': '+message.content);
                 await this.help(message);
             }
         } else {
+            console.log('Unknown command: ' + message.author.username + ': '+message.content);
             await this.help(message);
         }
     }

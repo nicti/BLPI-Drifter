@@ -74,12 +74,16 @@ var Commands = /** @class */ (function () {
                     case 1:
                         _c.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.help(message)];
+                    case 2:
+                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        return [4 /*yield*/, this.help(message)];
                     case 3:
                         _c.sent();
                         _c.label = 4;
                     case 4: return [3 /*break*/, 7];
-                    case 5: return [4 /*yield*/, this.help(message)];
+                    case 5:
+                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        return [4 /*yield*/, this.help(message)];
                     case 6:
                         _c.sent();
                         _c.label = 7;

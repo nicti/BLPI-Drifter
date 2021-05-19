@@ -85,6 +85,9 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
         switch (_b.label) {
             case 0:
                 botClientId = (_a = client.user) === null || _a === void 0 ? void 0 : _a.id;
+                if (message.author.id !== botClientId && process.env.LOGGING === "true") {
+                    console.log(message.author.username + ': ' + message.content);
+                }
                 if (typeof botClientId === "undefined") {
                     console.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');
                     return [2 /*return*/];

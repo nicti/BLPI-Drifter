@@ -31,6 +31,9 @@ setInterval(async () => {
 
 client.on('message', async (message: Message) => {
     const botClientId: Snowflake | undefined = client.user?.id;
+    if (message.author.id !== botClientId && process.env.LOGGING === "true") {
+        console.log(message.author.username+': '+message.content);
+    }
     if (typeof botClientId === "undefined") {
         console.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');
         return;
