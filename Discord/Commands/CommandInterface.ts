@@ -35,6 +35,13 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 }
             }
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
+            try {
+                await reactiveMsg.reactions.removeAll();
+            } catch (e) {
+                if (e.code !== 50003) {
+                    throw e;
+                }
+            }
             return true;
         } else if (reaction.first()?.emoji.name === '❎') {
             try {
@@ -45,6 +52,13 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 }
             }
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
+            try {
+                await reactiveMsg.reactions.removeAll();
+            } catch (e) {
+                if (e.code !== 50003) {
+                    throw e;
+                }
+            }
             return false;
         } else {
             try {

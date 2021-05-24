@@ -1,6 +1,8 @@
 import {JsonDB} from 'node-json-db';
 import {GoogleSpreadsheet} from "google-spreadsheet";
 import {config} from 'dotenv';
+import {AxiosInstance} from "axios";
+import {Message} from "discord.js";
 
 config();
 
@@ -14,12 +16,17 @@ export default class JoveStorage {
         'B', 'C', 'V', 'S', 'R'
     ];
     db: JsonDB;
+    esi: AxiosInstance;
 
-    constructor() {
+    constructor(esi: AxiosInstance) {
         this.db = new JsonDB('jove.json');
+        this.esi = esi;
     }
 
-    public async importFromGoogle(): Promise<boolean | string> {
+    public async importFromGoogle(message: Message): Promise<boolean | string> {
+        this.db.delete('region');
+        let skippedSystems = [];
+        let msg = await message.channel.send('Starting import... 000%');
         const {GOOGLE_API, GOOGLE_SHEET} = process.env;
         if (typeof GOOGLE_API === "undefined" || typeof GOOGLE_SHEET === "undefined") {
             return "Please make sure GOOGLE_API and GOOGLE_SHEET are defined in .env!";
@@ -37,19 +44,46 @@ export default class JoveStorage {
             region = region.replace(/ /g, '_');
             let systems: { [index: string]: any } = {};
             for (let j = 0; j < drifterRegion.length; j++) {
+                if (drifterRegion[j].length < 3) {
+                    skippedSystems.push(drifterRegion[j]);
+                    continue;
+                }
+                let esiSystem = null;
+                do {
+                    try {
+                        esiSystem = (await this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=true&search='+drifterRegion[j])).data.solar_system;
+                    } catch (e) {
+                        esiSystem = null;
+                    }
+                } while (esiSystem === null);
+                if (typeof esiSystem === "undefined") {
+                    skippedSystems.push(drifterRegion[j]);
+                    continue;
+                } else {
+                    esiSystem = esiSystem[0];
+                }
                 const drifterSystem = drifterRegion[j].replace(/ /g, '_');
-                systems[drifterSystem] = {
-                    updated: '',
-                    whs: []
-                };
+                if (!systems.hasOwnProperty(drifterSystem)) {
+                    systems[drifterSystem] = {
+                        updated: '',
+                        whs: [],
+                        id: esiSystem
+                    };
+                }
             }
             await this.db.push('region/' + region, systems);
+            await msg.edit('Starting import... '+(((i+1)/drifterInfo.length)*100).toString().padStart(3,'0')+'%');
         }
+        await msg.edit('~~'+msg.content+'~~ **DONE**\nSkipped: '+skippedSystems.join(', '));
         return true;
     }
 
     public async getForRegion(region: string): Promise<any> {
         return await this.db.getData('region/' + region);
+    }
+
+    public async getRegions(): Promise<any> {
+        return await this.db.getData('region');
     }
 
     public async resetOutdated(region: string | null = null) {
@@ -78,7 +112,8 @@ export default class JoveStorage {
                 if (diff > (1000 * 60 * 60 * 16)) {
                     await this.db.push('region/' + region + '/' + systemsKey, {
                         updated: '',
-                        whs: []
+                        whs: [],
+                        id: system.id
                     });
                 } else {
                     if (system.whs.filter((wh: string) => wh.match(/[BCVSR]-/)) && diff > (1000 * 60 * 60 * 4)) {
@@ -106,9 +141,11 @@ export default class JoveStorage {
         let regions = await this.db.getData('region');
         for (const regionsKey in regions) {
             if (regions.hasOwnProperty(regionsKey) && regions[regionsKey].hasOwnProperty(system)) {
+                let sys = await this.db.getData('region/' + regionsKey + '/' + system);
                 await this.db.push('region/' + regionsKey + '/' + system, {
                     updated: (new Date()).valueOf(),
-                    whs: whs
+                    whs: whs,
+                    id: sys.id
                 });
                 return true;
             }
@@ -147,5 +184,33 @@ export default class JoveStorage {
             }
         }
         return returns;
+    }
+
+    public async findById(id: number): Promise<any|boolean> {
+        let returnData: any = {
+            region: "",
+            name: "",
+            data: {}
+        };
+        let regions = await this.db.getData('region');
+        for (const regionKey in regions) {
+            if (regions.hasOwnProperty(regionKey)) {
+                let region = regions[regionKey];
+                for (const systemKey in region) {
+                    if (region.hasOwnProperty(systemKey)) {
+                        let entry: any = region[systemKey];
+                        if (entry.id === id) {
+                            returnData.region = regionKey;
+                            returnData.name = systemKey;
+                            returnData.data = entry;
+                        }
+                    }
+                }
+            }
+        }
+        if (returnData.name === "") {
+            return false;
+        }
+        return returnData;
     }
 }

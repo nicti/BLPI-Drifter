@@ -6,6 +6,7 @@ import {AxiosInstance} from "axios";
 import Set from "./Commands/Set";
 import Find from "./Commands/Find";
 import LoadDataFromGoogle from "./Commands/LoadDataFromGoogle";
+import Closest from "./Commands/Closest";
 
 export default class Commands {
     client: Client;
@@ -22,6 +23,7 @@ export default class Commands {
         this.commands.set('set', (new Set(this.esi, this.jove)));
         this.commands.set('find', (new Find(this.esi, this.jove)));
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle(this.esi, this.jove)));
+        this.commands.set('closest', (new Closest(this.esi, this.jove)));
     }
 
     public async processMessage(message: Message) {

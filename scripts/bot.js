@@ -45,12 +45,21 @@ var JoveStorage_1 = __importDefault(require("../Storage/JoveStorage"));
 var dotenv_1 = require("dotenv");
 var Commands_1 = __importDefault(require("../Discord/Commands"));
 dotenv_1.config();
-var client = new discord_js_1.Client();
-var joveStorage = new JoveStorage_1.default();
-joveStorage.resetOutdated().then();
 var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
 });
+var client = new discord_js_1.Client();
+var joveStorage = new JoveStorage_1.default(esi);
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, joveStorage.resetOutdated()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); })();
 var commandHandler = new Commands_1.default(client, esi, joveStorage);
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
     var botClientId;

@@ -5,12 +5,14 @@ import {config} from "dotenv";
 import Commands from "../Discord/Commands";
 
 config();
-const client = new Client();
-const joveStorage = new JoveStorage();
-joveStorage.resetOutdated().then();
 const esi = axios.create({
     baseURL: 'https://esi.evetech.net',
 });
+const client = new Client();
+const joveStorage = new JoveStorage(esi);
+(async () => {
+    await joveStorage.resetOutdated();
+})();
 const commandHandler = new Commands(client, esi, joveStorage);
 
 

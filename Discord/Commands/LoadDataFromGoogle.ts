@@ -6,9 +6,7 @@ export default class LoadDataFromGoogle extends CommandInterface {
     async execute(message: Message, data: string[]): Promise<any> {
         let allowed = await this.provideYesNoPrompt(message,'Are you sure you want to reload all the data? This will delete saved data!');
         if (allowed) {
-            let msg = await message.channel.send('Starting import...');
-            await this.jove.importFromGoogle();
-            await msg.edit(msg.content+' **DONE**');
+            await this.jove.importFromGoogle(message);
         }
     }
 

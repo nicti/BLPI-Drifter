@@ -62,24 +62,18 @@ var LoadDataFromGoogle = /** @class */ (function (_super) {
     }
     LoadDataFromGoogle.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var allowed, msg;
+            var allowed;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Are you sure you want to reload all the data? This will delete saved data!')];
                     case 1:
                         allowed = _a.sent();
-                        if (!allowed) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.channel.send('Starting import...')];
+                        if (!allowed) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.jove.importFromGoogle(message)];
                     case 2:
-                        msg = _a.sent();
-                        return [4 /*yield*/, this.jove.importFromGoogle()];
-                    case 3:
                         _a.sent();
-                        return [4 /*yield*/, msg.edit(msg.content + ' **DONE**')];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         });

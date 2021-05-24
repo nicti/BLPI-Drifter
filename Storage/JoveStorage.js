@@ -41,54 +41,102 @@ var google_spreadsheet_1 = require("google-spreadsheet");
 var dotenv_1 = require("dotenv");
 dotenv_1.config();
 var JoveStorage = /** @class */ (function () {
-    function JoveStorage() {
+    function JoveStorage(esi) {
         this.db = new node_json_db_1.JsonDB('jove.json');
+        this.esi = esi;
     }
-    JoveStorage.prototype.importFromGoogle = function () {
+    JoveStorage.prototype.importFromGoogle = function (message) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, GOOGLE_API, GOOGLE_SHEET, doc, drifterSheet, drifterInfo, i, drifterRegion, region, systems, j, drifterSystem;
+            var skippedSystems, msg, _a, GOOGLE_API, GOOGLE_SHEET, doc, drifterSheet, drifterInfo, i, drifterRegion, region, systems, j, esiSystem, e_1, drifterSystem;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.db.delete('region');
+                        skippedSystems = [];
+                        return [4 /*yield*/, message.channel.send('Starting import... 000%')];
+                    case 1:
+                        msg = _b.sent();
                         _a = process.env, GOOGLE_API = _a.GOOGLE_API, GOOGLE_SHEET = _a.GOOGLE_SHEET;
                         if (typeof GOOGLE_API === "undefined" || typeof GOOGLE_SHEET === "undefined") {
                             return [2 /*return*/, "Please make sure GOOGLE_API and GOOGLE_SHEET are defined in .env!"];
                         }
                         doc = new google_spreadsheet_1.GoogleSpreadsheet(GOOGLE_SHEET);
                         return [4 /*yield*/, doc.useApiKey(GOOGLE_API)];
-                    case 1:
+                    case 2:
                         _b.sent();
                         return [4 /*yield*/, doc.loadInfo()];
-                    case 2:
+                    case 3:
                         _b.sent();
                         drifterSheet = doc.sheetsByIndex[0];
                         return [4 /*yield*/, drifterSheet.getCellsInRange('A9:AO72')];
-                    case 3:
+                    case 4:
                         drifterInfo = _b.sent();
                         i = 0;
-                        _b.label = 4;
-                    case 4:
-                        if (!(i < drifterInfo.length)) return [3 /*break*/, 7];
+                        _b.label = 5;
+                    case 5:
+                        if (!(i < drifterInfo.length)) return [3 /*break*/, 17];
                         drifterRegion = drifterInfo[i];
                         drifterRegion.splice(-1, 1);
                         region = drifterRegion.shift();
                         region = region.replace(/ /g, '_');
                         systems = {};
-                        for (j = 0; j < drifterRegion.length; j++) {
-                            drifterSystem = drifterRegion[j].replace(/ /g, '_');
-                            systems[drifterSystem] = {
-                                updated: '',
-                                whs: []
-                            };
-                        }
-                        return [4 /*yield*/, this.db.push('region/' + region, systems)];
-                    case 5:
-                        _b.sent();
+                        j = 0;
                         _b.label = 6;
                     case 6:
+                        if (!(j < drifterRegion.length)) return [3 /*break*/, 13];
+                        if (drifterRegion[j].length < 3) {
+                            skippedSystems.push(drifterRegion[j]);
+                            return [3 /*break*/, 12];
+                        }
+                        esiSystem = null;
+                        _b.label = 7;
+                    case 7:
+                        _b.trys.push([7, 9, , 10]);
+                        return [4 /*yield*/, this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=true&search=' + drifterRegion[j])];
+                    case 8:
+                        esiSystem = (_b.sent()).data.solar_system;
+                        return [3 /*break*/, 10];
+                    case 9:
+                        e_1 = _b.sent();
+                        esiSystem = null;
+                        return [3 /*break*/, 10];
+                    case 10:
+                        if (esiSystem === null) return [3 /*break*/, 7];
+                        _b.label = 11;
+                    case 11:
+                        if (typeof esiSystem === "undefined") {
+                            skippedSystems.push(drifterRegion[j]);
+                            return [3 /*break*/, 12];
+                        }
+                        else {
+                            esiSystem = esiSystem[0];
+                        }
+                        drifterSystem = drifterRegion[j].replace(/ /g, '_');
+                        if (!systems.hasOwnProperty(drifterSystem)) {
+                            systems[drifterSystem] = {
+                                updated: '',
+                                whs: [],
+                                id: esiSystem
+                            };
+                        }
+                        _b.label = 12;
+                    case 12:
+                        j++;
+                        return [3 /*break*/, 6];
+                    case 13: return [4 /*yield*/, this.db.push('region/' + region, systems)];
+                    case 14:
+                        _b.sent();
+                        return [4 /*yield*/, msg.edit('Starting import... ' + (((i + 1) / drifterInfo.length) * 100).toString().padStart(3, '0') + '%')];
+                    case 15:
+                        _b.sent();
+                        _b.label = 16;
+                    case 16:
                         i++;
-                        return [3 /*break*/, 4];
-                    case 7: return [2 /*return*/, true];
+                        return [3 /*break*/, 5];
+                    case 17: return [4 /*yield*/, msg.edit('~~' + msg.content + '~~ **DONE**\nSkipped: ' + skippedSystems.join(', '))];
+                    case 18:
+                        _b.sent();
+                        return [2 /*return*/, true];
                 }
             });
         });
@@ -98,6 +146,16 @@ var JoveStorage = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.db.getData('region/' + region)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    JoveStorage.prototype.getRegions = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.db.getData('region')];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -171,7 +229,8 @@ var JoveStorage = /** @class */ (function () {
                         if (!(diff > (1000 * 60 * 60 * 16))) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.db.push('region/' + region + '/' + systemsKey, {
                                 updated: '',
-                                whs: []
+                                whs: [],
+                                id: system.id
                             })];
                     case 2:
                         _c.sent();
@@ -195,7 +254,7 @@ var JoveStorage = /** @class */ (function () {
     };
     JoveStorage.prototype.setWHs = function (system, whs) {
         return __awaiter(this, void 0, void 0, function () {
-            var i, wh, regions, _a, _b, _i, regionsKey;
+            var i, wh, regions, _a, _b, _i, regionsKey, sys;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -217,20 +276,24 @@ var JoveStorage = /** @class */ (function () {
                         _i = 0;
                         _c.label = 2;
                     case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                        if (!(_i < _a.length)) return [3 /*break*/, 6];
                         regionsKey = _a[_i];
-                        if (!(regions.hasOwnProperty(regionsKey) && regions[regionsKey].hasOwnProperty(system))) return [3 /*break*/, 4];
+                        if (!(regions.hasOwnProperty(regionsKey) && regions[regionsKey].hasOwnProperty(system))) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.db.getData('region/' + regionsKey + '/' + system)];
+                    case 3:
+                        sys = _c.sent();
                         return [4 /*yield*/, this.db.push('region/' + regionsKey + '/' + system, {
                                 updated: (new Date()).valueOf(),
-                                whs: whs
+                                whs: whs,
+                                id: sys.id
                             })];
-                    case 3:
+                    case 4:
                         _c.sent();
                         return [2 /*return*/, true];
-                    case 4:
+                    case 5:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 5: return [2 /*return*/, 'Could not find system in jove list'];
+                    case 6: return [2 /*return*/, 'Could not find system in jove list'];
                 }
             });
         });
@@ -273,6 +336,43 @@ var JoveStorage = /** @class */ (function () {
                             }
                         }
                         return [2 /*return*/, returns];
+                }
+            });
+        });
+    };
+    JoveStorage.prototype.findById = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var returnData, regions, regionKey, region, systemKey, entry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        returnData = {
+                            region: "",
+                            name: "",
+                            data: {}
+                        };
+                        return [4 /*yield*/, this.db.getData('region')];
+                    case 1:
+                        regions = _a.sent();
+                        for (regionKey in regions) {
+                            if (regions.hasOwnProperty(regionKey)) {
+                                region = regions[regionKey];
+                                for (systemKey in region) {
+                                    if (region.hasOwnProperty(systemKey)) {
+                                        entry = region[systemKey];
+                                        if (entry.id === id) {
+                                            returnData.region = regionKey;
+                                            returnData.name = systemKey;
+                                            returnData.data = entry;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (returnData.name === "") {
+                            return [2 /*return*/, false];
+                        }
+                        return [2 /*return*/, returnData];
                 }
             });
         });

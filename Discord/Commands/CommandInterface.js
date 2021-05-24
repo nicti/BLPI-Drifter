@@ -44,7 +44,7 @@ var CommandInterface = /** @class */ (function () {
     CommandInterface.prototype.provideYesNoPrompt = function (message, question) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var reactiveMsg, reaction, e_1, e_2, e_3;
+            var reactiveMsg, reaction, e_1, e_2, e_3, e_4, e_5;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, message.reply(question)];
@@ -59,7 +59,7 @@ var CommandInterface = /** @class */ (function () {
                         return [4 /*yield*/, reactiveMsg.awaitReactions(function (reaction, user) { return user.id == message.author.id && (reaction.emoji.name == '✅' || reaction.emoji.name == '❎'); }, { max: 1, time: 30000 })];
                     case 4:
                         reaction = _c.sent();
-                        if (!(((_a = reaction.first()) === null || _a === void 0 ? void 0 : _a.emoji.name) === '✅')) return [3 /*break*/, 10];
+                        if (!(((_a = reaction.first()) === null || _a === void 0 ? void 0 : _a.emoji.name) === '✅')) return [3 /*break*/, 14];
                         _c.label = 5;
                     case 5:
                         _c.trys.push([5, 7, , 8]);
@@ -76,40 +76,66 @@ var CommandInterface = /** @class */ (function () {
                     case 8: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
                     case 9:
                         _c.sent();
-                        return [2 /*return*/, true];
+                        _c.label = 10;
                     case 10:
-                        if (!(((_b = reaction.first()) === null || _b === void 0 ? void 0 : _b.emoji.name) === '❎')) return [3 /*break*/, 16];
-                        _c.label = 11;
-                    case 11:
-                        _c.trys.push([11, 13, , 14]);
+                        _c.trys.push([10, 12, , 13]);
                         return [4 /*yield*/, reactiveMsg.reactions.removeAll()];
-                    case 12:
+                    case 11:
                         _c.sent();
-                        return [3 /*break*/, 14];
-                    case 13:
+                        return [3 /*break*/, 13];
+                    case 12:
                         e_2 = _c.sent();
                         if (e_2.code !== 50003) {
                             throw e_2;
                         }
-                        return [3 /*break*/, 14];
-                    case 14: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
+                        return [3 /*break*/, 13];
+                    case 13: return [2 /*return*/, true];
+                    case 14:
+                        if (!(((_b = reaction.first()) === null || _b === void 0 ? void 0 : _b.emoji.name) === '❎')) return [3 /*break*/, 24];
+                        _c.label = 15;
                     case 15:
-                        _c.sent();
-                        return [2 /*return*/, false];
-                    case 16:
-                        _c.trys.push([16, 18, , 19]);
+                        _c.trys.push([15, 17, , 18]);
                         return [4 /*yield*/, reactiveMsg.reactions.removeAll()];
-                    case 17:
+                    case 16:
                         _c.sent();
-                        return [3 /*break*/, 19];
-                    case 18:
+                        return [3 /*break*/, 18];
+                    case 17:
                         e_3 = _c.sent();
                         if (e_3.code !== 50003) {
                             throw e_3;
                         }
-                        return [3 /*break*/, 19];
-                    case 19: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
+                        return [3 /*break*/, 18];
+                    case 18: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
+                    case 19:
+                        _c.sent();
+                        _c.label = 20;
                     case 20:
+                        _c.trys.push([20, 22, , 23]);
+                        return [4 /*yield*/, reactiveMsg.reactions.removeAll()];
+                    case 21:
+                        _c.sent();
+                        return [3 /*break*/, 23];
+                    case 22:
+                        e_4 = _c.sent();
+                        if (e_4.code !== 50003) {
+                            throw e_4;
+                        }
+                        return [3 /*break*/, 23];
+                    case 23: return [2 /*return*/, false];
+                    case 24:
+                        _c.trys.push([24, 26, , 27]);
+                        return [4 /*yield*/, reactiveMsg.reactions.removeAll()];
+                    case 25:
+                        _c.sent();
+                        return [3 /*break*/, 27];
+                    case 26:
+                        e_5 = _c.sent();
+                        if (e_5.code !== 50003) {
+                            throw e_5;
+                        }
+                        return [3 /*break*/, 27];
+                    case 27: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
+                    case 28:
                         _c.sent();
                         return [2 /*return*/, false];
                 }
