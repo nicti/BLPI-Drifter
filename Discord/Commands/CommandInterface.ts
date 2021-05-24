@@ -30,22 +30,20 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
-                    throw e;
-                }
                 if (e.code === 50013) {
                     console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                } else if (e.code !== 50003) {
+                    throw e;
                 }
             }
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
-                    throw e;
-                }
                 if (e.code === 50013) {
                     console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                } else if (e.code !== 50003) {
+                    throw e;
                 }
             }
             return true;
@@ -53,22 +51,20 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
-                    throw e;
-                }
                 if (e.code === 50013) {
                     console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                } else if (e.code !== 50003) {
+                    throw e;
                 }
             }
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
-                    throw e;
-                }
                 if (e.code === 50013) {
                     console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                } else if (e.code !== 50003) {
+                    throw e;
                 }
             }
             return false;
@@ -76,11 +72,10 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
-                    throw e;
-                }
                 if (e.code === 50013) {
                     console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                } else if (e.code !== 50003) {
+                    throw e;
                 }
             }
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
