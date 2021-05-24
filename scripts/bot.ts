@@ -56,7 +56,7 @@ client.on('message', async (message: Message) => {
     } else if (process.env.NODE_ENV === "develop" && message.channel.type !== 'dm') {
         return;
     }
-    if (message.content.startsWith('<@!' + botClientId + '>')) {
+    if (message.content.startsWith('<@!' + botClientId + '>') || message.content.startsWith('<@' + botClientId + '>')) {
         return commandHandler.processMessage(message);
     }
 });

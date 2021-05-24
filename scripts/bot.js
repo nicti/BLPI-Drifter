@@ -120,7 +120,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                 else if (process.env.NODE_ENV === "develop" && message.channel.type !== 'dm') {
                     return [2 /*return*/];
                 }
-                if (message.content.startsWith('<@!' + botClientId + '>')) {
+                if (message.content.startsWith('<@!' + botClientId + '>') || message.content.startsWith('<@' + botClientId + '>')) {
                     return [2 /*return*/, commandHandler.processMessage(message)];
                 }
                 return [2 /*return*/];
