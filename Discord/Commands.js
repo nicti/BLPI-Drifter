@@ -60,35 +60,35 @@ var Commands = /** @class */ (function () {
         this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.client)));
     }
     Commands.prototype.processMessage = function (message) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var strippedName, splitData, command, executeObject;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        strippedName = message.content.replace('<@!' + ((_a = this.client.user) === null || _a === void 0 ? void 0 : _a.id) + '> ', '');
+                        strippedName = message.content.replace('<@!' + ((_a = this.client.user) === null || _a === void 0 ? void 0 : _a.id) + '> ', '').replace('<@' + ((_b = this.client.user) === null || _b === void 0 ? void 0 : _b.id) + '> ', '');
                         splitData = strippedName.split(' ');
-                        command = (_b = splitData.shift()) === null || _b === void 0 ? void 0 : _b.toString().toLowerCase();
+                        command = (_c = splitData.shift()) === null || _c === void 0 ? void 0 : _c.toString().toLowerCase();
                         if (!(typeof command !== "undefined")) return [3 /*break*/, 5];
                         executeObject = this.commands.get(command);
                         if (!(typeof executeObject !== "undefined")) return [3 /*break*/, 2];
                         return [4 /*yield*/, executeObject.execute(message, splitData)];
                     case 1:
-                        _c.sent();
+                        _d.sent();
                         return [3 /*break*/, 4];
                     case 2:
                         console.log('Unknown command: ' + message.author.username + ': ' + message.content);
                         return [4 /*yield*/, this.help(message)];
                     case 3:
-                        _c.sent();
-                        _c.label = 4;
+                        _d.sent();
+                        _d.label = 4;
                     case 4: return [3 /*break*/, 7];
                     case 5:
                         console.log('Unknown command: ' + message.author.username + ': ' + message.content);
                         return [4 /*yield*/, this.help(message)];
                     case 6:
-                        _c.sent();
-                        _c.label = 7;
+                        _d.sent();
+                        _d.label = 7;
                     case 7: return [2 /*return*/];
                 }
             });
