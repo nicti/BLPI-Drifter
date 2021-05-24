@@ -22,32 +22,46 @@ export default class Pings {
 
     private static async healthEsi(): Promise<any> {
         let data;
+        let status: number = 0;
         try {
-            data = (await esi.get('/status.json?version=latest')).data;
+            data = (await esi.get('/status.json?version=latest'));
+            if (typeof data.data === "undefined") {
+                data = [];
+            } else {
+                data = data.data;
+            }
         } catch (e) {
-            console.log(e);
+            status = e.response.status;
+        }
+        let length;
+        if (status === 200) {
+            length = data.length;
+        } else {
+            length = 1;
         }
         let statusNumbers = {
             green: 0,
             yellow: 0,
             red: 0,
             unknown: 0,
-            total: data.length
+            total: length
         };
-        for (let i = 0; i < data.length; i++) {
-            let endpoint = data[i];
-            switch (endpoint.status) {
-                case 'green':
-                    statusNumbers.green += 1;
-                    break;
-                case 'yellow':
-                    statusNumbers.yellow += 1;
-                    break;
-                case 'red':
-                    statusNumbers.red += 1;
-                    break;
-                default:
-                    statusNumbers.unknown += 1;
+        if (status === 200) {
+            for (let i = 0; i < data.length; i++) {
+                let endpoint = data[i];
+                switch (endpoint.status) {
+                    case 'green':
+                        statusNumbers.green += 1;
+                        break;
+                    case 'yellow':
+                        statusNumbers.yellow += 1;
+                        break;
+                    case 'red':
+                        statusNumbers.red += 1;
+                        break;
+                    default:
+                        statusNumbers.unknown += 1;
+                }
             }
         }
         return statusNumbers;

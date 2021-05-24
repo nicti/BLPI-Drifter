@@ -79,41 +79,58 @@ var Pings = /** @class */ (function () {
     };
     Pings.healthEsi = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data, e_1, statusNumbers, i, endpoint;
+            var data, status, e_1, length, statusNumbers, i, endpoint;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, esi.get('/status.json?version=latest')];
+                        status = 0;
+                        _a.label = 1;
                     case 1:
-                        data = (_a.sent()).data;
-                        return [3 /*break*/, 3];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, esi.get('/status.json?version=latest')];
                     case 2:
-                        e_1 = _a.sent();
-                        console.log(e_1);
-                        return [3 /*break*/, 3];
+                        data = (_a.sent());
+                        if (typeof data.data === "undefined") {
+                            data = [];
+                        }
+                        else {
+                            data = data.data;
+                        }
+                        return [3 /*break*/, 4];
                     case 3:
+                        e_1 = _a.sent();
+                        status = e_1.response.status;
+                        return [3 /*break*/, 4];
+                    case 4:
+                        if (status === 200) {
+                            length = data.length;
+                        }
+                        else {
+                            length = 1;
+                        }
                         statusNumbers = {
                             green: 0,
                             yellow: 0,
                             red: 0,
                             unknown: 0,
-                            total: data.length
+                            total: length
                         };
-                        for (i = 0; i < data.length; i++) {
-                            endpoint = data[i];
-                            switch (endpoint.status) {
-                                case 'green':
-                                    statusNumbers.green += 1;
-                                    break;
-                                case 'yellow':
-                                    statusNumbers.yellow += 1;
-                                    break;
-                                case 'red':
-                                    statusNumbers.red += 1;
-                                    break;
-                                default:
-                                    statusNumbers.unknown += 1;
+                        if (status === 200) {
+                            for (i = 0; i < data.length; i++) {
+                                endpoint = data[i];
+                                switch (endpoint.status) {
+                                    case 'green':
+                                        statusNumbers.green += 1;
+                                        break;
+                                    case 'yellow':
+                                        statusNumbers.yellow += 1;
+                                        break;
+                                    case 'red':
+                                        statusNumbers.red += 1;
+                                        break;
+                                    default:
+                                        statusNumbers.unknown += 1;
+                                }
                             }
                         }
                         return [2 /*return*/, statusNumbers];

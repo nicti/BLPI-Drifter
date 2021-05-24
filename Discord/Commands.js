@@ -46,6 +46,7 @@ var Find_1 = __importDefault(require("./Commands/Find"));
 var LoadDataFromGoogle_1 = __importDefault(require("./Commands/LoadDataFromGoogle"));
 var Closest_1 = __importDefault(require("./Commands/Closest"));
 var Health_1 = __importDefault(require("./Commands/Health"));
+var Summary_1 = __importDefault(require("./Commands/Summary"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove) {
         this.client = client;
@@ -58,6 +59,7 @@ var Commands = /** @class */ (function () {
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove)));
         this.commands.set('closest', (new Closest_1.default(this.esi, this.jove)));
         this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.client)));
+        this.commands.set('summary', (new Summary_1.default(this.esi, this.jove)));
     }
     Commands.prototype.processMessage = function (message) {
         var _a, _b, _c;

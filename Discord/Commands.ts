@@ -8,6 +8,7 @@ import Find from "./Commands/Find";
 import LoadDataFromGoogle from "./Commands/LoadDataFromGoogle";
 import Closest from "./Commands/Closest";
 import Health from "./Commands/Health";
+import Summary from "./Commands/Summary";
 
 export default class Commands {
     client: Client;
@@ -26,6 +27,7 @@ export default class Commands {
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle(this.esi, this.jove)));
         this.commands.set('closest', (new Closest(this.esi, this.jove)));
         this.commands.set('health', (new Health(this.esi, this.jove, this.client)));
+        this.commands.set('summary', (new Summary(this.esi, this.jove)));
     }
 
     public async processMessage(message: Message) {
