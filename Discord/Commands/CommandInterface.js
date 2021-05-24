@@ -69,8 +69,11 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 8];
                     case 7:
                         e_1 = _c.sent();
-                        if (e_1.code !== 50003 || e_1.code !== 50013) {
+                        if (e_1.code !== 50003) {
                             throw e_1;
+                        }
+                        if (e_1.code === 50013) {
+                            console.log('Bot is missing Edit Messages permissions in channel ' + reactiveMsg.channel.id);
                         }
                         return [3 /*break*/, 8];
                     case 8: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
@@ -85,8 +88,11 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 13];
                     case 12:
                         e_2 = _c.sent();
-                        if (e_2.code !== 50003 || e_2.code !== 50013) {
+                        if (e_2.code !== 50003) {
                             throw e_2;
+                        }
+                        if (e_2.code === 50013) {
+                            console.log('Bot is missing Edit Messages permissions in channel ' + reactiveMsg.channel.id);
                         }
                         return [3 /*break*/, 13];
                     case 13: return [2 /*return*/, true];
@@ -101,8 +107,11 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 18];
                     case 17:
                         e_3 = _c.sent();
-                        if (e_3.code !== 50003 || e_3.code !== 50013) {
+                        if (e_3.code !== 50003) {
                             throw e_3;
+                        }
+                        if (e_3.code === 50013) {
+                            console.log('Bot is missing Edit Messages permissions in channel ' + reactiveMsg.channel.id);
                         }
                         return [3 /*break*/, 18];
                     case 18: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
@@ -117,8 +126,11 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 23];
                     case 22:
                         e_4 = _c.sent();
-                        if (e_4.code !== 50003 || e_4.code !== 50013) {
+                        if (e_4.code !== 50003) {
                             throw e_4;
+                        }
+                        if (e_4.code === 50013) {
+                            console.log('Bot is missing Edit Messages permissions in channel ' + reactiveMsg.channel.id);
                         }
                         return [3 /*break*/, 23];
                     case 23: return [2 /*return*/, false];
@@ -130,8 +142,11 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 27];
                     case 26:
                         e_5 = _c.sent();
-                        if (e_5.code !== 50003 || e_5.code !== 50013) {
+                        if (e_5.code !== 50003) {
                             throw e_5;
+                        }
+                        if (e_5.code === 50013) {
+                            console.log('Bot is missing Edit Messages permissions in channel ' + reactiveMsg.channel.id);
                         }
                         return [3 /*break*/, 27];
                     case 27: return [4 /*yield*/, reactiveMsg.edit('~~' + reactiveMsg.content + '~~')];
