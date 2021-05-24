@@ -69,7 +69,7 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 8];
                     case 7:
                         e_1 = _c.sent();
-                        if (e_1.code !== 50003) {
+                        if (e_1.code !== 50003 || e_1.code !== 50013) {
                             throw e_1;
                         }
                         return [3 /*break*/, 8];
@@ -85,7 +85,7 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 13];
                     case 12:
                         e_2 = _c.sent();
-                        if (e_2.code !== 50003) {
+                        if (e_2.code !== 50003 || e_2.code !== 50013) {
                             throw e_2;
                         }
                         return [3 /*break*/, 13];
@@ -101,7 +101,7 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 18];
                     case 17:
                         e_3 = _c.sent();
-                        if (e_3.code !== 50003) {
+                        if (e_3.code !== 50003 || e_3.code !== 50013) {
                             throw e_3;
                         }
                         return [3 /*break*/, 18];
@@ -117,7 +117,7 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 23];
                     case 22:
                         e_4 = _c.sent();
-                        if (e_4.code !== 50003) {
+                        if (e_4.code !== 50003 || e_4.code !== 50013) {
                             throw e_4;
                         }
                         return [3 /*break*/, 23];
@@ -130,7 +130,7 @@ var CommandInterface = /** @class */ (function () {
                         return [3 /*break*/, 27];
                     case 26:
                         e_5 = _c.sent();
-                        if (e_5.code !== 50003) {
+                        if (e_5.code !== 50003 || e_5.code !== 50013) {
                             throw e_5;
                         }
                         return [3 /*break*/, 27];

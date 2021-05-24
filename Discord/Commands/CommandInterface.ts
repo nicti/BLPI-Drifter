@@ -30,7 +30,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
+                if (e.code !== 50003 || e.code !== 50013) {
                     throw e;
                 }
             }
@@ -38,7 +38,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
+                if (e.code !== 50003 || e.code !== 50013) {
                     throw e;
                 }
             }
@@ -47,7 +47,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
+                if (e.code !== 50003 || e.code !== 50013) {
                     throw e;
                 }
             }
@@ -55,7 +55,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
+                if (e.code !== 50003 || e.code !== 50013) {
                     throw e;
                 }
             }
@@ -64,7 +64,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
-                if (e.code !== 50003) {
+                if (e.code !== 50003 || e.code !== 50013) {
                     throw e;
                 }
             }
