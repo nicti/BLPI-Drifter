@@ -45,6 +45,7 @@ var Set_1 = __importDefault(require("./Commands/Set"));
 var Find_1 = __importDefault(require("./Commands/Find"));
 var LoadDataFromGoogle_1 = __importDefault(require("./Commands/LoadDataFromGoogle"));
 var Closest_1 = __importDefault(require("./Commands/Closest"));
+var Health_1 = __importDefault(require("./Commands/Health"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove) {
         this.client = client;
@@ -56,6 +57,7 @@ var Commands = /** @class */ (function () {
         this.commands.set('find', (new Find_1.default(this.esi, this.jove)));
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove)));
         this.commands.set('closest', (new Closest_1.default(this.esi, this.jove)));
+        this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.client)));
     }
     Commands.prototype.processMessage = function (message) {
         var _a, _b;
@@ -74,12 +76,16 @@ var Commands = /** @class */ (function () {
                     case 1:
                         _c.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.help(message)];
+                    case 2:
+                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        return [4 /*yield*/, this.help(message)];
                     case 3:
                         _c.sent();
                         _c.label = 4;
                     case 4: return [3 /*break*/, 7];
-                    case 5: return [4 /*yield*/, this.help(message)];
+                    case 5:
+                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        return [4 /*yield*/, this.help(message)];
                     case 6:
                         _c.sent();
                         _c.label = 7;

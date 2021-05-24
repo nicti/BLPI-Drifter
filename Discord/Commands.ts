@@ -7,6 +7,7 @@ import Set from "./Commands/Set";
 import Find from "./Commands/Find";
 import LoadDataFromGoogle from "./Commands/LoadDataFromGoogle";
 import Closest from "./Commands/Closest";
+import Health from "./Commands/Health";
 
 export default class Commands {
     client: Client;
@@ -24,6 +25,7 @@ export default class Commands {
         this.commands.set('find', (new Find(this.esi, this.jove)));
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle(this.esi, this.jove)));
         this.commands.set('closest', (new Closest(this.esi, this.jove)));
+        this.commands.set('health', (new Health(this.esi, this.jove, this.client)));
     }
 
     public async processMessage(message: Message) {
@@ -36,9 +38,11 @@ export default class Commands {
             if (typeof executeObject !== "undefined") {
                 await executeObject.execute(message, splitData);
             } else {
+                console.log('Unknown command: ' + message.author.username + ': '+message.content);
                 await this.help(message);
             }
         } else {
+            console.log('Unknown command: ' + message.author.username + ': '+message.content);
             await this.help(message);
         }
     }

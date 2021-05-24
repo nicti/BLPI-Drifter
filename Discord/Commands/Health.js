@@ -55,65 +55,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
-var JoveStorage_1 = __importDefault(require("../../Storage/JoveStorage"));
-var Find = /** @class */ (function (_super) {
-    __extends(Find, _super);
-    function Find() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var discord_js_1 = require("discord.js");
+var Pings_1 = __importDefault(require("../../Bot/Pings"));
+var Health = /** @class */ (function (_super) {
+    __extends(Health, _super);
+    function Health(esi, jove, client) {
+        var _this = _super.call(this, esi, jove) || this;
+        _this.client = client;
+        return _this;
     }
-    Find.prototype.execute = function (message, data) {
+    Health.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var find, results, stableReturns, unstableReturns, dateObj, i, result, i, result, resultMessage;
+            var attachment, info, esiHealth, embeded, dateObj, dateString;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        find = data[0].toUpperCase();
-                        if (!!JoveStorage_1.default.WHS.includes(find)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.reply('Insert correct wh type please: B,C,V,S,R')];
+                        attachment = new discord_js_1.MessageAttachment('assets/blpi.png', 'blpi.png');
+                        return [4 /*yield*/, Pings_1.default.statusAll(this.client)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.jove.resetOutdated()];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, this.jove.findByType(find)];
-                    case 4:
-                        results = _a.sent();
-                        stableReturns = [];
-                        unstableReturns = [];
-                        for (i = 0; i < results.stable.length; i++) {
-                            result = results.stable[i];
-                            dateObj = new Date(result.updated);
-                            stableReturns.push(result.system + " - " + result.region + " [" + dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC' + "]");
+                        info = _a.sent();
+                        esiHealth = Math.round(((info.esiHealth.green / info.esiHealth.total) * 100)) + '%';
+                        embeded = new discord_js_1.MessageEmbed();
+                        embeded.setTitle('Health Report');
+                        embeded.addField('ESI Ping', info.esiPing, true);
+                        embeded.addField('ESI Health', esiHealth, true);
+                        embeded.addField('Discord Ping', info.discordPing + ' ms', true);
+                        embeded.addField('Discord Health', info.discordHealth, true);
+                        if (info.esiPing === "ok" && info.discordHealth === "GREEN") {
+                            embeded.setColor('GREEN');
                         }
-                        for (i = 0; i < results.unstable.length; i++) {
-                            result = results.unstable[i];
-                            dateObj = new Date(result.updated);
-                            unstableReturns.push(result.system + " - " + result.region + " [" + dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC' + "]");
+                        else if (info.esiPing !== "ok" && info.discordHealth !== "GREEN") {
+                            embeded.setColor("RED");
                         }
-                        resultMessage = "";
-                        if (stableReturns.length === 0 && unstableReturns.length === 0) {
-                            resultMessage = "No " + find + " WHs found!";
+                        else if (info.esiPing !== "ok" || info.discordHealth !== "GREEN") {
+                            embeded.setColor("YELLOW");
                         }
-                        if (stableReturns.length > 0) {
-                            resultMessage += 'Stable ' + find + ' WHs:```' + stableReturns.join("\n") + '```';
-                        }
-                        if (unstableReturns.length > 0) {
-                            resultMessage += '**Un**stable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
-                        }
-                        return [4 /*yield*/, message.channel.send(resultMessage)];
-                    case 5:
+                        embeded.attachFiles([attachment]);
+                        embeded.setThumbnail('attachment://blpi.png');
+                        dateObj = new Date();
+                        dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                            ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                        embeded.setFooter(dateString);
+                        return [4 /*yield*/, message.channel.send(embeded)];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    Find.prototype.help = function () {
-        return { name: "`find <WH identifier>`", value: "Finds all WHs of a certain type" };
+    Health.prototype.help = function () {
+        return { name: "`health`", value: "Reports health of connected APIs" };
     };
-    return Find;
+    return Health;
 }(CommandInterface_1.default));
-exports.default = Find;
+exports.default = Health;
