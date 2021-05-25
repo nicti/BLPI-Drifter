@@ -90,6 +90,7 @@ var Pings = /** @class */ (function () {
                         return [4 /*yield*/, esi.get('/status.json?version=latest')];
                     case 2:
                         data = (_a.sent());
+                        status = data.status;
                         if (typeof data.data === "undefined") {
                             data = [];
                         }

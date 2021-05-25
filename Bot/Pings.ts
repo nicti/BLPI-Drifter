@@ -25,6 +25,7 @@ export default class Pings {
         let status: number = 0;
         try {
             data = (await esi.get('/status.json?version=latest'));
+            status = data.status;
             if (typeof data.data === "undefined") {
                 data = [];
             } else {
