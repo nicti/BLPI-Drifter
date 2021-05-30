@@ -1,1 +1,1 @@
-Add bot using this: [Link](https://discord.com/oauth2/authorize?client_id=840369233253629973&scope=bot&permissions=248896)
+BLPI Drifter Bot
