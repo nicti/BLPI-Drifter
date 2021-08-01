@@ -1,6 +1,5 @@
 import CommandInterface from "./CommandInterface";
 import {Message} from "discord.js";
-import {sys} from "ping";
 
 export default class Summary extends CommandInterface {
 
@@ -55,6 +54,10 @@ export default class Summary extends CommandInterface {
 
     help(): { name: string; value: string } {
         return {name: "`summary`", value: "Provides a summary of known data."};
+    }
+
+    getAccessLevel(): number {
+        return 0;
     }
 
 }

@@ -62,4 +62,8 @@ export default class Closest extends CommandInterface {
         return {name: "`closest <system>`", value: "Finds the closest jove system to a given system."};
     }
 
+    getAccessLevel(): number {
+        return 0;
+    }
+
 }

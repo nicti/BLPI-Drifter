@@ -45,23 +45,28 @@ var JoveStorage_1 = __importDefault(require("../Storage/JoveStorage"));
 var dotenv_1 = require("dotenv");
 var Commands_1 = __importDefault(require("../Discord/Commands"));
 var Pings_1 = __importDefault(require("../Bot/Pings"));
+var FAS_1 = __importDefault(require("../Storage/FAS"));
 dotenv_1.config();
 var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
 });
 var client = new discord_js_1.Client();
 var joveStorage = new JoveStorage_1.default(esi);
+var fas = new FAS_1.default(joveStorage);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, joveStorage.resetOutdated()];
             case 1:
                 _a.sent();
+                return [4 /*yield*/, fas.reindex()];
+            case 2:
+                _a.sent();
                 return [2 /*return*/];
         }
     });
 }); })();
-var commandHandler = new Commands_1.default(client, esi, joveStorage);
+var commandHandler = new Commands_1.default(client, esi, joveStorage, fas);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
@@ -128,7 +133,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
     });
 }); });
 client.login(process.env.BOT_TOKEN).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var data, esiHealth, dateObj, dateString;
+    var data, esiHealth, dateObj, dateString, fasCount;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -139,9 +144,10 @@ client.login(process.env.BOT_TOKEN).then(function () { return __awaiter(void 0, 
                 dateObj = new Date();
                 dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
                     ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                fasCount = fas.getLength();
                 (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
                     type: 'WATCHING',
-                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Updated: " + dateString
+                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Updated: " + dateString + " | Index: " + fasCount + " entries"
                 });
                 return [2 /*return*/];
         }

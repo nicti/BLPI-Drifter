@@ -8,8 +8,9 @@ interface CommandInterfaceInterface {
 }
 
 export default abstract class CommandInterface implements CommandInterfaceInterface {
-    esi: AxiosInstance;
-    jove: JoveStorage;
+
+    protected esi: AxiosInstance;
+    protected jove: JoveStorage;
 
     constructor(esi: AxiosInstance, jove: JoveStorage) {
         this.esi = esi;
@@ -19,6 +20,8 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
     abstract execute(message: Message, data: string[]): Promise<any>;
 
     abstract help(): { name: string, value: string };
+
+    abstract getAccessLevel(): number
 
     public async provideYesNoPrompt(message: Message, question: string): Promise<boolean> {
         let reactiveMsg = await message.reply(question);

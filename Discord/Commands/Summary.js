@@ -136,6 +136,9 @@ var Summary = /** @class */ (function (_super) {
     Summary.prototype.help = function () {
         return { name: "`summary`", value: "Provides a summary of known data." };
     };
+    Summary.prototype.getAccessLevel = function () {
+        return 0;
+    };
     return Summary;
 }(CommandInterface_1.default));
 exports.default = Summary;

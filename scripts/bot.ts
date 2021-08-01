@@ -1,9 +1,10 @@
-import {Client, Message, MessageEmbed, Snowflake} from "discord.js";
+import {Client, Message, Snowflake} from "discord.js";
 import axios from "axios";
 import JoveStorage from "../Storage/JoveStorage";
 import {config} from "dotenv";
 import Commands from "../Discord/Commands";
 import Pings from "../Bot/Pings";
+import FAS from "../Storage/FAS";
 
 config();
 const esi = axios.create({
@@ -11,10 +12,12 @@ const esi = axios.create({
 });
 const client = new Client();
 const joveStorage = new JoveStorage(esi);
+const fas = new FAS(joveStorage);
 (async () => {
     await joveStorage.resetOutdated();
+    await fas.reindex();
 })();
-const commandHandler = new Commands(client, esi, joveStorage);
+const commandHandler = new Commands(client, esi, joveStorage, fas);
 
 (async () => {
 })();
@@ -66,8 +69,9 @@ client.login(process.env.BOT_TOKEN).then(async () => {
     let dateObj = new Date();
     let dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
         ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2,'0') + ' UTC';
+    let fasCount = fas.getLength();
     client.user?.setActivity({
         type: 'WATCHING',
-        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Updated: ${dateString}`
+        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Updated: ${dateString} | Index: ${fasCount} entries`
     });
 }).catch(console.error);

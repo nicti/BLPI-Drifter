@@ -14,4 +14,8 @@ export default class LoadDataFromGoogle extends CommandInterface {
         return {name: "`loadDataFromGoogle`", value: "Reloads drifter data from Google Spreadsheet. This does delete all previously gathered data."};
     }
 
+    getAccessLevel(): number {
+        return 1;
+    }
+
 }

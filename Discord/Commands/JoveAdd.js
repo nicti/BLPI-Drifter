@@ -55,82 +55,79 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
-var Show = /** @class */ (function (_super) {
-    __extends(Show, _super);
-    function Show() {
+var JoveAdd = /** @class */ (function (_super) {
+    __extends(JoveAdd, _super);
+    function JoveAdd() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Show.prototype.execute = function (message, data) {
+    JoveAdd.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var regionSearchName, searchResults, region, regionName, joveRegionalInfo, str, link, key, systems, date, dateObj;
+            var system, searchResults, esiSystemData, systemName, systemId, esiConstellationData, esiRegionData, regionName, existence, rundown;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        regionSearchName = data[0];
-                        if (!(regionSearchName.length < 3)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.channel.send('Region name must be at least 3 characters long.')];
+                        system = data[0];
+                        if (!(system.length < 3)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, message.channel.send('System name must be at least 3 characters long.')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.esi.get('/v2/search/?categories=region&datasource=tranquility&language=en&strict=false&search=' + regionSearchName)];
+                    case 2: return [4 /*yield*/, this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=false&search=' + system)];
                     case 3:
-                        searchResults = (_a.sent()).data.region;
+                        searchResults = (_a.sent()).data.solar_system;
                         if (!(typeof searchResults === "undefined")) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.channel.send('Could not find region matching `' + regionSearchName + '`.')];
+                        return [4 /*yield*/, message.reply('`' + system + '` did not return a valid object. Please double check the entered system name!')];
                     case 4:
                         _a.sent();
                         return [2 /*return*/];
                     case 5:
                         if (!(searchResults.length > 1)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, message.channel.send('Search resulted in several hits, please specify.')];
+                        return [4 /*yield*/, message.reply('`' + system + '` returned multiple results. Please enter the exact system name!')];
                     case 6:
                         _a.sent();
                         return [2 /*return*/];
-                    case 7: return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + searchResults[0] + '/')];
+                    case 7: return [4 /*yield*/, this.esi.get('/v4/universe/systems/' + searchResults[0] + '/')];
                     case 8:
-                        region = (_a.sent()).data;
-                        regionName = region.name.replace(/ /g, '_');
-                        return [4 /*yield*/, this.jove.resetOutdated(regionName)];
+                        esiSystemData = (_a.sent()).data;
+                        systemName = esiSystemData.name;
+                        systemId = esiSystemData.system_id;
+                        return [4 /*yield*/, this.esi.get('/v1/universe/constellations/' + esiSystemData.constellation_id + '/')];
                     case 9:
-                        _a.sent();
-                        return [4 /*yield*/, this.jove.getForRegion(regionName)];
+                        esiConstellationData = (_a.sent()).data;
+                        return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + esiConstellationData.region_id + '/')];
                     case 10:
-                        joveRegionalInfo = _a.sent();
-                        str = '';
-                        link = [];
-                        for (key in joveRegionalInfo) {
-                            if (joveRegionalInfo.hasOwnProperty(key)) {
-                                link.push(key);
-                                systems = '';
-                                systems = joveRegionalInfo[key].whs.join(',');
-                                if (systems === '')
-                                    systems = '-';
-                                date = void 0;
-                                if (joveRegionalInfo[key].updated === '') {
-                                    date = '';
-                                }
-                                else {
-                                    dateObj = new Date(joveRegionalInfo[key].updated);
-                                    date = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                                        ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC';
-                                }
-                                str += key + ': ' + systems + ' [' + date + ']\n';
-                            }
-                        }
-                        return [4 /*yield*/, message.channel.send(region.name + ':```' + str + '```https://evemaps.dotlan.net/map/' + regionName + '/' + link.join(':'))];
+                        esiRegionData = (_a.sent()).data;
+                        regionName = esiRegionData.name;
+                        return [4 /*yield*/, this.jove.findById(systemId)];
                     case 11:
+                        existence = _a.sent();
+                        if (!!existence) return [3 /*break*/, 13];
+                        return [4 /*yield*/, message.reply('System `' + systemName + '` is already in the list of jove systems!')];
+                    case 12:
                         _a.sent();
                         return [2 /*return*/];
+                    case 13: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Do you want to add the system `' + systemName + '` in the region `' + regionName + '` to the list of jove systems?')];
+                    case 14:
+                        rundown = _a.sent();
+                        if (!rundown) return [3 /*break*/, 17];
+                        return [4 /*yield*/, this.jove.addSystem(regionName, systemName, systemId)];
+                    case 15:
+                        _a.sent();
+                        return [4 /*yield*/, message.reply('System `' + systemName + '` added to region `' + regionName + '`!')];
+                    case 16:
+                        _a.sent();
+                        _a.label = 17;
+                    case 17: return [2 /*return*/];
                 }
             });
         });
     };
-    Show.prototype.help = function () {
-        return { name: "`show <region>`", value: "Shows all drifter data for a given region" };
+    JoveAdd.prototype.help = function () {
+        return { name: "`joveadd <system>`", value: "Adds a system to the list of jove systems" };
     };
-    Show.prototype.getAccessLevel = function () {
-        return 0;
+    JoveAdd.prototype.getAccessLevel = function () {
+        return 1;
     };
-    return Show;
+    return JoveAdd;
 }(CommandInterface_1.default));
-exports.default = Show;
+exports.default = JoveAdd;

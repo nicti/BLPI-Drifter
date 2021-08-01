@@ -47,4 +47,8 @@ export default class Show extends CommandInterface {
         return {name: "`show <region>`", value: "Shows all drifter data for a given region"};
     }
 
+    getAccessLevel(): number {
+        return 0;
+    }
+
 }

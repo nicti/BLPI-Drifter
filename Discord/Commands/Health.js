@@ -59,9 +59,10 @@ var discord_js_1 = require("discord.js");
 var Pings_1 = __importDefault(require("../../Bot/Pings"));
 var Health = /** @class */ (function (_super) {
     __extends(Health, _super);
-    function Health(esi, jove, client) {
+    function Health(esi, jove, client, fas) {
         var _this = _super.call(this, esi, jove) || this;
         _this.client = client;
+        _this.fas = fas;
         return _this;
     }
     Health.prototype.execute = function (message, data) {
@@ -81,6 +82,7 @@ var Health = /** @class */ (function (_super) {
                         embeded.addField('ESI Health', esiHealth, true);
                         embeded.addField('Discord Ping', info.discordPing + ' ms', true);
                         embeded.addField('Discord Health', info.discordHealth, true);
+                        embeded.addField('Index', this.fas.getLength() + ' entries', true);
                         if (info.esiPing === "ok" && info.discordHealth === "GREEN") {
                             embeded.setColor('GREEN');
                         }
@@ -106,6 +108,9 @@ var Health = /** @class */ (function (_super) {
     };
     Health.prototype.help = function () {
         return { name: "`health`", value: "Reports health of connected APIs" };
+    };
+    Health.prototype.getAccessLevel = function () {
+        return 0;
     };
     return Health;
 }(CommandInterface_1.default));

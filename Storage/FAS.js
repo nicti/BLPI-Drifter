@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,40 +35,60 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var CommandInterface_1 = __importDefault(require("./CommandInterface"));
-var LoadDataFromGoogle = /** @class */ (function (_super) {
-    __extends(LoadDataFromGoogle, _super);
-    function LoadDataFromGoogle() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var FAS = /** @class */ (function () {
+    function FAS(jove) {
+        this.db = [];
+        this.jove = jove;
     }
-    LoadDataFromGoogle.prototype.execute = function (message, data) {
+    FAS.prototype.reindex = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var allowed;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Are you sure you want to reload all the data? This will delete saved data!')];
+            var regions, _i, _a, _b, region, regionData, _c, _d, _e, system, systemData;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
+                    case 0:
+                        this.db = [];
+                        return [4 /*yield*/, this.jove.getRegions()];
                     case 1:
-                        allowed = _a.sent();
-                        if (!allowed) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.jove.importFromGoogle(message)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        regions = _f.sent();
+                        for (_i = 0, _a = Object.entries(regions); _i < _a.length; _i++) {
+                            _b = _a[_i], region = _b[0], regionData = _b[1];
+                            for (_c = 0, _d = Object.entries(regionData); _c < _d.length; _c++) {
+                                _e = _d[_c], system = _e[0], systemData = _e[1];
+                                this.db.push(system);
+                            }
+                        }
+                        return [2 /*return*/, true];
                 }
             });
         });
     };
-    LoadDataFromGoogle.prototype.help = function () {
-        return { name: "`loadDataFromGoogle`", value: "Reloads drifter data from Google Spreadsheet. This does delete all previously gathered data." };
+    FAS.prototype.find = function (system) {
+        return __awaiter(this, void 0, void 0, function () {
+            var originalSystem;
+            return __generator(this, function (_a) {
+                originalSystem = system;
+                if (this.db.includes(system)) {
+                    return [2 /*return*/, system];
+                }
+                system = FAS.capitalizeFirstLetter(system.toLowerCase());
+                if (this.db.includes(system)) {
+                    return [2 /*return*/, system];
+                }
+                system = system.toUpperCase();
+                if (this.db.includes(system)) {
+                    return [2 /*return*/, system];
+                }
+                return [2 /*return*/, originalSystem];
+            });
+        });
     };
-    LoadDataFromGoogle.prototype.getAccessLevel = function () {
-        return 1;
+    FAS.prototype.getLength = function () {
+        return this.db.length;
     };
-    return LoadDataFromGoogle;
-}(CommandInterface_1.default));
-exports.default = LoadDataFromGoogle;
+    FAS.capitalizeFirstLetter = function (str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    return FAS;
+}());
+exports.default = FAS;

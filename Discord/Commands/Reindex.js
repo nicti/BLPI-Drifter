@@ -55,68 +55,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
-var JoveStorage_1 = __importDefault(require("../../Storage/JoveStorage"));
-var Find = /** @class */ (function (_super) {
-    __extends(Find, _super);
-    function Find() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var Reindex = /** @class */ (function (_super) {
+    __extends(Reindex, _super);
+    function Reindex(esi, jove, fas) {
+        var _this = _super.call(this, esi, jove) || this;
+        _this.fas = fas;
+        return _this;
     }
-    Find.prototype.execute = function (message, data) {
+    Reindex.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var find, results, stableReturns, unstableReturns, dateObj, i, result, i, result, resultMessage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        find = data[0].toUpperCase();
-                        if (!!JoveStorage_1.default.WHS.includes(find)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.reply('Insert correct wh type please: B,C,V,S,R')];
+                    case 0: return [4 /*yield*/, this.fas.reindex()];
                     case 1:
+                        if (!_a.sent()) return [3 /*break*/, 3];
+                        return [4 /*yield*/, message.reply('Reindexing was successful')];
+                    case 2:
                         _a.sent();
-                        return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.jove.resetOutdated()];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, this.jove.findByType(find)];
-                    case 4:
-                        results = _a.sent();
-                        stableReturns = [];
-                        unstableReturns = [];
-                        for (i = 0; i < results.stable.length; i++) {
-                            result = results.stable[i];
-                            dateObj = new Date(result.updated);
-                            stableReturns.push(result.system + " - " + result.region + " [" + dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC' + "]");
-                        }
-                        for (i = 0; i < results.unstable.length; i++) {
-                            result = results.unstable[i];
-                            dateObj = new Date(result.updated);
-                            unstableReturns.push(result.system + " - " + result.region + " [" + dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC' + "]");
-                        }
-                        resultMessage = "";
-                        if (stableReturns.length === 0 && unstableReturns.length === 0) {
-                            resultMessage = "No " + find + " WHs found!";
-                        }
-                        if (stableReturns.length > 0) {
-                            resultMessage += 'Stable ' + find + ' WHs:```' + stableReturns.join("\n") + '```';
-                        }
-                        if (unstableReturns.length > 0) {
-                            resultMessage += '**Un**stable ' + find + ' WHs:```' + unstableReturns.join("\n") + '```';
-                        }
-                        return [4 /*yield*/, message.channel.send(resultMessage)];
-                    case 5:
-                        _a.sent();
-                        return [2 /*return*/];
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    Find.prototype.help = function () {
-        return { name: "`find <WH identifier>`", value: "Finds all WHs of a certain type" };
+    Reindex.prototype.help = function () {
+        return { name: "`reindex`", value: "Rebuilds index for fast lookup of system names" };
     };
-    Find.prototype.getAccessLevel = function () {
+    Reindex.prototype.getAccessLevel = function () {
         return 0;
     };
-    return Find;
+    return Reindex;
 }(CommandInterface_1.default));
-exports.default = Find;
+exports.default = Reindex;

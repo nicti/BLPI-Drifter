@@ -3,14 +3,17 @@ import {Client, Message, MessageAttachment, MessageEmbed} from "discord.js";
 import Pings from "../../Bot/Pings";
 import {AxiosInstance} from "axios";
 import JoveStorage from "../../Storage/JoveStorage";
+import FAS from "../../Storage/FAS";
 
 export default class Health extends CommandInterface {
 
     client: Client;
+    fas: FAS;
 
-    constructor(esi: AxiosInstance, jove: JoveStorage, client: Client) {
+    constructor(esi: AxiosInstance, jove: JoveStorage, client: Client, fas: FAS) {
         super(esi,jove);
         this.client = client;
+        this.fas = fas;
     }
 
 
@@ -24,6 +27,7 @@ export default class Health extends CommandInterface {
         embeded.addField('ESI Health',esiHealth,true);
         embeded.addField('Discord Ping',info.discordPing+' ms',true);
         embeded.addField('Discord Health',info.discordHealth,true);
+        embeded.addField('Index', this.fas.getLength()+' entries', true);
         if (info.esiPing === "ok" && info.discordHealth === "GREEN") {
             embeded.setColor('GREEN');
         }else if (info.esiPing !== "ok" && info.discordHealth !== "GREEN") {
@@ -42,6 +46,10 @@ export default class Health extends CommandInterface {
 
     help(): { name: string; value: string } {
         return {name: "`health`", value: "Reports health of connected APIs"};
+    }
+
+    getAccessLevel(): number {
+        return 0;
     }
 
 

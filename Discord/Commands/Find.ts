@@ -45,4 +45,8 @@ export default class Find extends CommandInterface
         return {name: "`find <WH identifier>`", value: "Finds all WHs of a certain type"};
     }
 
+    getAccessLevel(): number {
+        return 0;
+    }
+
 }

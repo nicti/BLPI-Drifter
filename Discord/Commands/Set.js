@@ -57,8 +57,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var Set = /** @class */ (function (_super) {
     __extends(Set, _super);
-    function Set() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Set(esi, jove, fas) {
+        var _this = _super.call(this, esi, jove) || this;
+        _this.fas = fas;
+        return _this;
     }
     Set.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -71,30 +73,34 @@ var Set = /** @class */ (function (_super) {
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
-                    case 2:
-                        system = data[0];
-                        whs = data[1];
-                        return [4 /*yield*/, this.jove.setWHs(system, whs.split('|'))];
+                    case 2: return [4 /*yield*/, this.fas.find(data[0])];
                     case 3:
-                        result = _a.sent();
-                        if (!(result === true)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.react('✅')];
+                        system = _a.sent();
+                        whs = data[1].toUpperCase();
+                        return [4 /*yield*/, this.jove.setWHs(system, whs.split('|'))];
                     case 4:
-                        _a.sent();
-                        return [3 /*break*/, 7];
+                        result = _a.sent();
+                        if (!(result === true)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, message.react('✅')];
                     case 5:
-                        if (!(typeof result === 'string')) return [3 /*break*/, 7];
-                        return [4 /*yield*/, message.reply(result)];
-                    case 6:
                         _a.sent();
-                        _a.label = 7;
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 6:
+                        if (!(typeof result === 'string')) return [3 /*break*/, 8];
+                        return [4 /*yield*/, message.reply(result)];
+                    case 7:
+                        _a.sent();
+                        _a.label = 8;
+                    case 8: return [2 /*return*/];
                 }
             });
         });
     };
     Set.prototype.help = function () {
         return { name: "`set <system> <pipe split WH identifier>`", value: "Sets drifter info for a certain system. Use letter for WH identifier. Concat - for EOL/crit. E.g.: `set Jita C|C-`" };
+    };
+    Set.prototype.getAccessLevel = function () {
+        return 0;
     };
     return Set;
 }(CommandInterface_1.default));

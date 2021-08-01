@@ -213,4 +213,18 @@ export default class JoveStorage {
         }
         return returnData;
     }
+
+    public async addSystem(region: string, system: string, id: number) {
+        region = region.replace(/ /g,'_');
+        await this.db.push('region/' + region + '/' + system, {
+            updated: '',
+            whs: [],
+            id: id
+        });
+    }
+
+    public async removeSystem(region: string, system: string) {
+        region = region.replace(/ /g,'_');
+        await this.db.delete('region/' + region + '/' + system);
+    }
 }

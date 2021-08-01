@@ -149,6 +149,9 @@ var Closest = /** @class */ (function (_super) {
     Closest.prototype.help = function () {
         return { name: "`closest <system>`", value: "Finds the closest jove system to a given system." };
     };
+    Closest.prototype.getAccessLevel = function () {
+        return 0;
+    };
     return Closest;
 }(CommandInterface_1.default));
 exports.default = Closest;
