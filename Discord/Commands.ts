@@ -32,7 +32,8 @@ export default class Commands {
 
     public async processMessage(message: Message) {
         // Perform data stripping
-        let strippedName = message.content.replace('<@!' + this.client.user?.id + '> ', '').replace('<@' + this.client.user?.id + '> ','');
+        let trimmedMessage = message.content.replace(/\s+/g,' ');
+        let strippedName = trimmedMessage.replace('<@!' + this.client.user?.id + '> ', '').replace('<@' + this.client.user?.id + '> ','');
         let splitData = strippedName.split(' ');
         let command = splitData.shift()?.toString().toLowerCase();
         if (typeof command !== "undefined") {
