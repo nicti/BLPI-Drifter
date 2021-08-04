@@ -26,7 +26,7 @@ export default class JoveAdd extends CommandInterface {
     let esiRegionData = (await this.esi.get('/v1/universe/regions/'+esiConstellationData.region_id+'/')).data;
     let regionName = esiRegionData.name;
     let existence = await this.jove.findById(systemId);
-    if (!existence) {
+    if (existence) {
       await message.reply('System `'+systemName+'` is already in the list of jove systems!');
       return;
     }

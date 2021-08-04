@@ -101,7 +101,7 @@ var JoveAdd = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.jove.findById(systemId)];
                     case 11:
                         existence = _a.sent();
-                        if (!!existence) return [3 /*break*/, 13];
+                        if (!existence) return [3 /*break*/, 13];
                         return [4 /*yield*/, message.reply('System `' + systemName + '` is already in the list of jove systems!')];
                     case 12:
                         _a.sent();
