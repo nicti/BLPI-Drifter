@@ -13,6 +13,7 @@ import FAS from "../Storage/FAS";
 import Reindex from "./Commands/Reindex";
 import JoveAdd from "./Commands/JoveAdd";
 import JoveRemove from "./Commands/JoveRemove";
+import PFAdd from "./Commands/PFAdd";
 
 export default class Commands {
     client: Client;
@@ -38,6 +39,7 @@ export default class Commands {
         this.commands.set('reindex', (new Reindex(this.esi, this.jove, this.fas)));
         this.commands.set('joveadd', (new JoveAdd(this.esi, this.jove)));
         this.commands.set('joveremove', (new JoveRemove(this.esi, this.jove)));
+        this.commands.set('pfload', (new PFAdd(this.esi, this.jove)));
 
         let admins = process.env.ADMINS?.split(',');
         if (typeof admins === "undefined") {
