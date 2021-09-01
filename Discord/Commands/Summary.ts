@@ -4,6 +4,7 @@ import {Message} from "discord.js";
 export default class Summary extends CommandInterface {
 
     async execute(message: Message, data: string[]): Promise<any> {
+        await this.jove.resetOutdated();
         let regionalData: any = {};
         let regions = await this.jove.getRegions();
         for (const regionKey in regions) {

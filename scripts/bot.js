@@ -73,7 +73,7 @@ var commandHandler = new Commands_1.default(client, esi, joveStorage, fas);
     });
 }); })();
 setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var data, esiHealth, dateObj, dateString;
+    var data, esiHealth, dateObj, dateString, fasCount;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -84,9 +84,10 @@ setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
                 dateObj = new Date();
                 dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
                     ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                fasCount = fas.getLength();
                 (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
                     type: 'WATCHING',
-                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Updated: " + dateString
+                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Index: " + fasCount + " entries | Updated: " + dateString
                 });
                 return [2 /*return*/];
         }

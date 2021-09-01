@@ -50,6 +50,7 @@ var Summary_1 = __importDefault(require("./Commands/Summary"));
 var Reindex_1 = __importDefault(require("./Commands/Reindex"));
 var JoveAdd_1 = __importDefault(require("./Commands/JoveAdd"));
 var JoveRemove_1 = __importDefault(require("./Commands/JoveRemove"));
+var PFLoad_1 = __importDefault(require("./Commands/PFLoad"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove, fas) {
         var _a;
@@ -68,6 +69,7 @@ var Commands = /** @class */ (function () {
         this.commands.set('reindex', (new Reindex_1.default(this.esi, this.jove, this.fas)));
         this.commands.set('joveadd', (new JoveAdd_1.default(this.esi, this.jove)));
         this.commands.set('joveremove', (new JoveRemove_1.default(this.esi, this.jove)));
+        this.commands.set('pfload', (new PFLoad_1.default(this.esi, this.jove)));
         var admins = (_a = process.env.ADMINS) === null || _a === void 0 ? void 0 : _a.split(',');
         if (typeof admins === "undefined") {
             throw "Unable to find admins in .env file. Please specify admins in your .env file.";

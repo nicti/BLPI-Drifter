@@ -70,10 +70,12 @@ var Summary = /** @class */ (function (_super) {
             var regionalData, regions, regionKey, scanned, hasWh, whs, region, systemName, system, headline, str, regionalDataKey, regionData, i, j, chunk, chunks, i_1, regStr;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.jove.resetOutdated()];
+                    case 1:
+                        _a.sent();
                         regionalData = {};
                         return [4 /*yield*/, this.jove.getRegions()];
-                    case 1:
+                    case 2:
                         regions = _a.sent();
                         for (regionKey in regions) {
                             if (regions.hasOwnProperty(regionKey)) {
@@ -114,21 +116,21 @@ var Summary = /** @class */ (function (_super) {
                             chunks.push(str.slice(i, i + chunk));
                         }
                         return [4 /*yield*/, message.channel.send('**Summary**')];
-                    case 2:
+                    case 3:
                         _a.sent();
                         i_1 = 0;
-                        _a.label = 3;
-                    case 3:
-                        if (!(i_1 < chunks.length)) return [3 /*break*/, 6];
+                        _a.label = 4;
+                    case 4:
+                        if (!(i_1 < chunks.length)) return [3 /*break*/, 7];
                         regStr = chunks[i_1];
                         return [4 /*yield*/, message.channel.send('```' + headline + ("+".padStart(20 + 1, "-") + "+".padStart(5 + 1, "-") + "+".padStart(7 + 1, "-") + "+".padStart(6 + 1, "-") + "".padStart(10, "-") + "\n") + regStr.join("") + '```')];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
                     case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6:
                         i_1++;
-                        return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 7: return [2 /*return*/];
                 }
             });
         });

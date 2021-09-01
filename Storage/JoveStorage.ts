@@ -128,7 +128,7 @@ export default class JoveStorage {
         }
     }
 
-    public async setWHs(system: string, whs: [] | string[]): Promise<string | boolean> {
+    public async setWHs(system: string, whs: [] | string[], date: string | null = null): Promise<string | boolean> {
         for (let i = 0; i < whs.length; i++) {
             let wh = whs[i];
             if (!JoveStorage.POSSIBLE_VALUES.includes(wh)) {
@@ -142,8 +142,14 @@ export default class JoveStorage {
         for (const regionsKey in regions) {
             if (regions.hasOwnProperty(regionsKey) && regions[regionsKey].hasOwnProperty(system)) {
                 let sys = await this.db.getData('region/' + regionsKey + '/' + system);
+                let updated;
+                if (date === null) {
+                    updated = (new Date()).valueOf();
+                } else {
+                    updated = (new Date(date)).valueOf();
+                }
                 await this.db.push('region/' + regionsKey + '/' + system, {
-                    updated: (new Date()).valueOf(),
+                    updated: updated,
                     whs: whs,
                     id: sys.id
                 });
