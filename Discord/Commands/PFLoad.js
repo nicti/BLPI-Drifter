@@ -222,7 +222,7 @@ var PFLoad = /** @class */ (function (_super) {
         });
     };
     PFLoad.prototype.getAccessLevel = function () {
-        return 0;
+        return 1;
     };
     PFLoad.prototype.help = function () {
         return { name: "`pfload`", value: "Loads connections from pathfinder." };

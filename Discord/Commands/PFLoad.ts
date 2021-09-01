@@ -111,7 +111,7 @@ export default class PFLoad extends CommandInterface {
     }
 
     getAccessLevel(): number {
-        return 0;
+        return 1;
     }
 
     help(): { name: string; value: string } {
