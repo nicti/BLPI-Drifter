@@ -27,9 +27,10 @@ setInterval(async () => {
     let dateObj = new Date();
     let dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
         ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2,'0') + ' UTC';
+    let fasCount = fas.getLength();
     client.user?.setActivity({
         type: 'WATCHING',
-        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Updated: ${dateString}`
+        name: `ESI Ping: ${data.esiPing} | ESI Health: ${esiHealth} | Discord Ping: ${data.discordPing}ms | Discord Health: ${data.discordHealth} | Index: ${fasCount} entries | Updated: ${dateString}`
     });
 },1000*60);
 

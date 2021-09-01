@@ -252,9 +252,10 @@ var JoveStorage = /** @class */ (function () {
             });
         });
     };
-    JoveStorage.prototype.setWHs = function (system, whs) {
+    JoveStorage.prototype.setWHs = function (system, whs, date) {
+        if (date === void 0) { date = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var i, wh, regions, _a, _b, _i, regionsKey, sys;
+            var i, wh, regions, _a, _b, _i, regionsKey, sys, updated;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -282,8 +283,15 @@ var JoveStorage = /** @class */ (function () {
                         return [4 /*yield*/, this.db.getData('region/' + regionsKey + '/' + system)];
                     case 3:
                         sys = _c.sent();
+                        updated = void 0;
+                        if (date === null) {
+                            updated = (new Date()).valueOf();
+                        }
+                        else {
+                            updated = (new Date(date)).valueOf();
+                        }
                         return [4 /*yield*/, this.db.push('region/' + regionsKey + '/' + system, {
-                                updated: (new Date()).valueOf(),
+                                updated: updated,
                                 whs: whs,
                                 id: sys.id
                             })];
