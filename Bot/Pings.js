@@ -44,9 +44,10 @@ var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
 });
 var Pings = /** @class */ (function () {
-    function Pings() {
+    function Pings(logger) {
+        this.logger = logger;
     }
-    Pings.statusAll = function (client) {
+    Pings.prototype.statusAll = function (client) {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
@@ -69,17 +70,26 @@ var Pings = /** @class */ (function () {
     };
     Pings.pingEsi = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var esiPing, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, esi.get('/ping')];
-                    case 1: return [2 /*return*/, (_a.sent()).data];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, esi.get('/ping')];
+                    case 1:
+                        esiPing = _a.sent();
+                        return [2 /*return*/, esiPing.data];
+                    case 2:
+                        e_1 = _a.sent();
+                        return [2 /*return*/, 'Unknown'];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     Pings.healthEsi = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data, status, e_1, length, statusNumbers, i, endpoint;
+            var data, status, e_2, length, statusNumbers, i, endpoint;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -99,8 +109,8 @@ var Pings = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        e_1 = _a.sent();
-                        status = e_1.response.status;
+                        e_2 = _a.sent();
+                        status = e_2.response.status;
                         return [3 /*break*/, 4];
                     case 4:
                         if (status === 200) {

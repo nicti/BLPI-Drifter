@@ -51,25 +51,29 @@ var Reindex_1 = __importDefault(require("./Commands/Reindex"));
 var JoveAdd_1 = __importDefault(require("./Commands/JoveAdd"));
 var JoveRemove_1 = __importDefault(require("./Commands/JoveRemove"));
 var PFLoad_1 = __importDefault(require("./Commands/PFLoad"));
+var Changelog_1 = __importDefault(require("./Commands/Changelog"));
 var Commands = /** @class */ (function () {
-    function Commands(client, esi, jove, fas) {
+    function Commands(client, esi, jove, fas, logger, pings) {
         var _a;
         this.client = client;
         this.esi = esi;
         this.jove = jove;
         this.fas = fas;
+        this.logger = logger;
+        this.pings = pings;
         this.commands = new Map();
-        this.commands.set('show', (new Show_1.default(this.esi, this.jove)));
-        this.commands.set('set', (new Set_1.default(this.esi, this.jove, this.fas)));
-        this.commands.set('find', (new Find_1.default(this.esi, this.jove)));
-        this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove)));
-        this.commands.set('closest', (new Closest_1.default(this.esi, this.jove)));
-        this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.client, this.fas)));
-        this.commands.set('summary', (new Summary_1.default(this.esi, this.jove)));
-        this.commands.set('reindex', (new Reindex_1.default(this.esi, this.jove, this.fas)));
-        this.commands.set('joveadd', (new JoveAdd_1.default(this.esi, this.jove)));
-        this.commands.set('joveremove', (new JoveRemove_1.default(this.esi, this.jove)));
-        this.commands.set('pfload', (new PFLoad_1.default(this.esi, this.jove)));
+        this.commands.set('show', (new Show_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('set', (new Set_1.default(this.esi, this.jove, this.logger, this.fas)));
+        this.commands.set('find', (new Find_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('closest', (new Closest_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('health', (new Health_1.default(this.esi, this.jove, this.logger, this.client, this.fas, this.pings)));
+        this.commands.set('summary', (new Summary_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('reindex', (new Reindex_1.default(this.esi, this.jove, this.logger, this.fas)));
+        this.commands.set('joveadd', (new JoveAdd_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('joveremove', (new JoveRemove_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('pfload', (new PFLoad_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('changelog', (new Changelog_1.default(this.esi, this.jove, this.logger)));
         var admins = (_a = process.env.ADMINS) === null || _a === void 0 ? void 0 : _a.split(',');
         if (typeof admins === "undefined") {
             throw "Unable to find admins in .env file. Please specify admins in your .env file.";
@@ -77,11 +81,11 @@ var Commands = /** @class */ (function () {
         this.admins = admins;
     }
     Commands.prototype.processMessage = function (message) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var accessLevel, trimmedMessage, strippedName, splitData, command, executeObject;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var accessLevel, trimmedMessage, strippedName, role, splitData, command, executeObject;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         accessLevel = 0;
                         if (this.admins.includes(message.author.id)) {
@@ -89,34 +93,38 @@ var Commands = /** @class */ (function () {
                         }
                         trimmedMessage = message.content.replace(/\s+/g, ' ');
                         strippedName = trimmedMessage.replace('<@!' + ((_a = this.client.user) === null || _a === void 0 ? void 0 : _a.id) + '> ', '').replace('<@' + ((_b = this.client.user) === null || _b === void 0 ? void 0 : _b.id) + '> ', '');
+                        role = (_c = message.guild) === null || _c === void 0 ? void 0 : _c.roles.cache.find(function (r) { var _a; return r.name === ((_a = message.client.user) === null || _a === void 0 ? void 0 : _a.username); });
+                        if (typeof role !== "undefined") {
+                            strippedName = strippedName.replace('<@&' + role.id + '> ', '');
+                        }
                         splitData = strippedName.split(' ');
-                        command = (_c = splitData.shift()) === null || _c === void 0 ? void 0 : _c.toString().toLowerCase();
+                        command = (_d = splitData.shift()) === null || _d === void 0 ? void 0 : _d.toString().toLowerCase();
                         if (!(typeof command !== "undefined")) return [3 /*break*/, 8];
                         executeObject = this.commands.get(command);
                         if (!(typeof executeObject !== "undefined")) return [3 /*break*/, 5];
                         if (!(accessLevel >= executeObject.getAccessLevel())) return [3 /*break*/, 2];
                         return [4 /*yield*/, executeObject.execute(message, splitData)];
                     case 1:
-                        _d.sent();
+                        _e.sent();
                         return [3 /*break*/, 4];
                     case 2: return [4 /*yield*/, message.reply('You do not have access to this command!')];
                     case 3:
-                        _d.sent();
-                        _d.label = 4;
+                        _e.sent();
+                        _e.label = 4;
                     case 4: return [3 /*break*/, 7];
                     case 5:
-                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        this.logger.warn('Unknown command: ' + message.author.username + ': ' + message.content);
                         return [4 /*yield*/, this.help(message)];
                     case 6:
-                        _d.sent();
-                        _d.label = 7;
+                        _e.sent();
+                        _e.label = 7;
                     case 7: return [3 /*break*/, 10];
                     case 8:
-                        console.log('Unknown command: ' + message.author.username + ': ' + message.content);
+                        this.logger.warn('Unknown command: ' + message.author.username + ': ' + message.content);
                         return [4 /*yield*/, this.help(message)];
                     case 9:
-                        _d.sent();
-                        _d.label = 10;
+                        _e.sent();
+                        _e.label = 10;
                     case 10: return [2 /*return*/];
                 }
             });
@@ -133,7 +141,7 @@ var Commands = /** @class */ (function () {
                         this.commands.forEach(function (command) {
                             embed.addFields(command.help());
                         });
-                        return [4 /*yield*/, message.reply(embed)];
+                        return [4 /*yield*/, message.reply({ embeds: [embed] })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

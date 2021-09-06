@@ -3,12 +3,13 @@ import {Message} from "discord.js";
 import {AxiosInstance} from "axios";
 import JoveStorage from "../../Storage/JoveStorage";
 import FAS from "../../Storage/FAS";
+import AdvancedLogger from "../../utils/AdvancedLogger";
 
 export default class Set extends CommandInterface {
     fas: FAS;
 
-    constructor(esi: AxiosInstance, jove: JoveStorage, fas: FAS) {
-        super(esi, jove);
+    constructor(esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger, fas: FAS) {
+        super(esi, jove, logger);
         this.fas = fas;
     }
 

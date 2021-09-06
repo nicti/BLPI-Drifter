@@ -3,13 +3,14 @@ import {Message} from "discord.js";
 import mysql, {Connection, MysqlError} from "mysql";
 import {AxiosInstance} from "axios";
 import JoveStorage from "../../Storage/JoveStorage";
+import AdvancedLogger from "../../utils/AdvancedLogger";
 
 export default class PFLoad extends CommandInterface {
     connection: Connection;
     static drifterIds = [31000003,31000006,31000001,31000002,31000004]
     
-    constructor(esi: AxiosInstance, jove: JoveStorage) {
-        super(esi, jove);
+    constructor(esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger) {
+        super(esi, jove, logger);
         this.connection = mysql.createConnection({
             host        : process.env.MYSQL_HOST,
             user        : process.env.MYSQL_USER,

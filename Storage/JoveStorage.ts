@@ -1,10 +1,8 @@
 import {JsonDB} from 'node-json-db';
 import {GoogleSpreadsheet} from "google-spreadsheet";
-import {config} from 'dotenv';
 import {AxiosInstance} from "axios";
 import {Message} from "discord.js";
-
-config();
+import AdvancedLogger from "../utils/AdvancedLogger";
 
 
 export default class JoveStorage {
@@ -17,10 +15,12 @@ export default class JoveStorage {
     ];
     db: JsonDB;
     esi: AxiosInstance;
+    logger: AdvancedLogger;
 
-    constructor(esi: AxiosInstance) {
+    constructor(esi: AxiosInstance, logger: AdvancedLogger) {
         this.db = new JsonDB('jove.json');
         this.esi = esi;
+        this.logger = logger;
     }
 
     public async importFromGoogle(message: Message): Promise<boolean | string> {
@@ -99,7 +99,7 @@ export default class JoveStorage {
             let systems = await this.db.getData('region/' + region);
             await this.resetOutdatedRegion(region, systems);
         } else {
-            console.error('Region ' + region + ' not found in database!');
+            this.logger.error('Region ' + region + ' not found in database!');
         }
     }
 
