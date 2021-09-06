@@ -57,8 +57,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var Reindex = /** @class */ (function (_super) {
     __extends(Reindex, _super);
-    function Reindex(esi, jove, fas) {
-        var _this = _super.call(this, esi, jove) || this;
+    function Reindex(esi, jove, logger, fas) {
+        var _this = _super.call(this, esi, jove, logger) || this;
         _this.fas = fas;
         return _this;
     }

@@ -38,12 +38,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var node_json_db_1 = require("node-json-db");
 var google_spreadsheet_1 = require("google-spreadsheet");
-var dotenv_1 = require("dotenv");
-dotenv_1.config();
 var JoveStorage = /** @class */ (function () {
-    function JoveStorage(esi) {
+    function JoveStorage(esi, logger) {
         this.db = new node_json_db_1.JsonDB('jove.json');
         this.esi = esi;
+        this.logger = logger;
     }
     JoveStorage.prototype.importFromGoogle = function (message) {
         return __awaiter(this, void 0, void 0, function () {
@@ -201,7 +200,7 @@ var JoveStorage = /** @class */ (function () {
                         _c.sent();
                         return [3 /*break*/, 11];
                     case 10:
-                        console.error('Region ' + region + ' not found in database!');
+                        this.logger.error('Region ' + region + ' not found in database!');
                         _c.label = 11;
                     case 11: return [2 /*return*/];
                 }

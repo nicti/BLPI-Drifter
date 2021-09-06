@@ -1,13 +1,20 @@
 import axios from 'axios';
 import {Client} from "discord.js";
+import AdvancedLogger from "../utils/AdvancedLogger";
 
 const esi = axios.create({
     baseURL: 'https://esi.evetech.net',
 });
 
 export default class Pings {
+    logger: AdvancedLogger;
 
-    public static async statusAll(client: Client): Promise<{esiPing: string, esiHealth: any, discordPing: number, discordHealth: any}> {
+    constructor(logger: AdvancedLogger) {
+        this.logger = logger;
+    }
+
+
+    public async statusAll(client: Client): Promise<{esiPing: string, esiHealth: any, discordPing: number, discordHealth: any}> {
         return {
             esiPing: await Pings.pingEsi(),
             esiHealth: await Pings.healthEsi(),
@@ -17,7 +24,12 @@ export default class Pings {
     }
 
     private static async pingEsi(): Promise<any> {
-        return (await esi.get('/ping')).data;
+        try {
+            let esiPing = await esi.get('/ping');
+            return esiPing.data;
+        } catch (e) {
+            return 'Unknown';
+        }
     }
 
     private static async healthEsi(): Promise<any> {

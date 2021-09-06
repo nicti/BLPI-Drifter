@@ -1,6 +1,7 @@
-import {Message} from "discord.js";
+import {DMChannel, Message, MessageReaction, Snowflake, User} from "discord.js";
 import {AxiosInstance} from "axios";
 import JoveStorage from "../../Storage/JoveStorage";
+import AdvancedLogger from "../../utils/AdvancedLogger";
 
 interface CommandInterfaceInterface {
     execute(message: Message, data: string[]): Promise<any>;
@@ -11,10 +12,12 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
 
     protected esi: AxiosInstance;
     protected jove: JoveStorage;
+    protected logger: AdvancedLogger;
 
-    constructor(esi: AxiosInstance, jove: JoveStorage) {
+    constructor(esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger) {
         this.esi = esi;
         this.jove = jove;
+        this.logger = logger;
     }
 
     abstract execute(message: Message, data: string[]): Promise<any>;
@@ -27,14 +30,18 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
         let reactiveMsg = await message.reply(question);
         await reactiveMsg.react('✅');
         await reactiveMsg.react('❎');
-        let reaction = await reactiveMsg.awaitReactions((reaction, user) => user.id == message.author.id && (reaction.emoji.name == '✅' || reaction.emoji.name == '❎'),
-            {max: 1, time: 30000});
+        const reactionFilter = (reaction: MessageReaction, user: User) => user.id == message.author.id && (reaction.emoji.name == '✅' || reaction.emoji.name == '❎');
+        let reaction = await reactiveMsg.awaitReactions({filter: reactionFilter, max: 1, time: 15000});
         if (reaction.first()?.emoji.name === '✅') {
             try {
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
                 if (e.code === 50013) {
-                    console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                    let textInfo = '';
+                    if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
+                        textInfo = `${reactiveMsg.channel.guild.name} > ${reactiveMsg.channel.name}`;
+                    }
+                    this.logger.warn(`Bot is missing Edit Messages permissions in channel ${textInfo} [${reactiveMsg.channel.id}]`);
                 } else if (e.code !== 50003) {
                     throw e;
                 }
@@ -44,7 +51,11 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
                 if (e.code === 50013) {
-                    console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                    let textInfo = '';
+                    if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
+                        textInfo = `${reactiveMsg.channel.guild.name} > ${reactiveMsg.channel.name}`;
+                    }
+                    this.logger.warn(`Bot is missing Edit Messages permissions in channel ${textInfo} [${reactiveMsg.channel.id}]`);
                 } else if (e.code !== 50003) {
                     throw e;
                 }
@@ -55,7 +66,11 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
                 if (e.code === 50013) {
-                    console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                    let textInfo = '';
+                    if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
+                        textInfo = `${reactiveMsg.channel.guild.name} > ${reactiveMsg.channel.name}`;
+                    }
+                    this.logger.warn(`Bot is missing Edit Messages permissions in channel ${textInfo} [${reactiveMsg.channel.id}]`);
                 } else if (e.code !== 50003) {
                     throw e;
                 }
@@ -65,7 +80,11 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
                 if (e.code === 50013) {
-                    console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                    let textInfo = '';
+                    if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
+                        textInfo = `${reactiveMsg.channel.guild.name} > ${reactiveMsg.channel.name}`;
+                    }
+                    this.logger.warn(`Bot is missing Edit Messages permissions in channel ${textInfo} [${reactiveMsg.channel.id}]`);
                 } else if (e.code !== 50003) {
                     throw e;
                 }
@@ -76,7 +95,11 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
                 await reactiveMsg.reactions.removeAll();
             } catch (e) {
                 if (e.code === 50013) {
-                    console.log('Bot is missing Edit Messages permissions in channel '+reactiveMsg.channel.id);
+                    let textInfo = '';
+                    if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
+                        textInfo = `${reactiveMsg.channel.guild.name} > ${reactiveMsg.channel.name}`;
+                    }
+                    this.logger.warn(`Bot is missing Edit Messages permissions in channel ${textInfo} [${reactiveMsg.channel.id}]`);
                 } else if (e.code !== 50003) {
                     throw e;
                 }

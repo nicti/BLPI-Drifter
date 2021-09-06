@@ -42,17 +42,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var discord_js_1 = require("discord.js");
 var axios_1 = __importDefault(require("axios"));
 var JoveStorage_1 = __importDefault(require("../Storage/JoveStorage"));
-var dotenv_1 = require("dotenv");
+var dotenv_flow_1 = require("dotenv-flow");
 var Commands_1 = __importDefault(require("../Discord/Commands"));
 var Pings_1 = __importDefault(require("../Bot/Pings"));
 var FAS_1 = __importDefault(require("../Storage/FAS"));
-dotenv_1.config();
+var AdvancedLogger_1 = __importDefault(require("../utils/AdvancedLogger"));
+dotenv_flow_1.config();
+var logger = new AdvancedLogger_1.default();
 var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
 });
-var client = new discord_js_1.Client();
-var joveStorage = new JoveStorage_1.default(esi);
+var client = new discord_js_1.Client({
+    intents: [
+        discord_js_1.Intents.FLAGS.GUILDS,
+        discord_js_1.Intents.FLAGS.GUILD_PRESENCES,
+        discord_js_1.Intents.FLAGS.GUILD_MESSAGES,
+        discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        discord_js_1.Intents.FLAGS.DIRECT_MESSAGES,
+        discord_js_1.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+    ],
+    partials: [
+        'CHANNEL',
+        'MESSAGE',
+        'REACTION'
+    ]
+});
+var joveStorage = new JoveStorage_1.default(esi, logger);
 var fas = new FAS_1.default(joveStorage);
+var pings = new Pings_1.default(logger);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -66,91 +83,81 @@ var fas = new FAS_1.default(joveStorage);
         }
     });
 }); })();
-var commandHandler = new Commands_1.default(client, esi, joveStorage, fas);
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
-    });
-}); })();
-setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var data, esiHealth, dateObj, dateString, fasCount;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, Pings_1.default.statusAll(client)];
-            case 1:
-                data = _b.sent();
-                esiHealth = Math.round(((data.esiHealth.green / data.esiHealth.total) * 100)) + '%';
-                dateObj = new Date();
-                dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                    ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
-                fasCount = fas.getLength();
-                (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
-                    type: 'WATCHING',
-                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Index: " + fasCount + " entries | Updated: " + dateString
-                });
-                return [2 /*return*/];
-        }
-    });
-}); }, 1000 * 60);
-client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    var botClientId;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var commandHandler = new Commands_1.default(client, esi, joveStorage, fas, logger, pings);
+client.once('ready', function () {
+    setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, esiHealth, dateObj, dateString, fasCount, name, a;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0: return [4 /*yield*/, pings.statusAll(client)];
+                case 1:
+                    data = _c.sent();
+                    esiHealth = Math.round(((data.esiHealth.green / data.esiHealth.total) * 100)) + '%';
+                    dateObj = new Date();
+                    dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                        ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
+                    fasCount = fas.getLength();
+                    name = "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Index: " + fasCount + " entries | Updated: " + dateString;
+                    (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
+                        type: 'WATCHING',
+                        name: name
+                    });
+                    (_b = client.user) === null || _b === void 0 ? void 0 : _b.setPresence({
+                        activities: [
+                            {
+                                type: 'WATCHING',
+                                name: name
+                            }
+                        ]
+                    });
+                    a = 'b';
+                    return [2 /*return*/];
+            }
+        });
+    }); }, 1000 * 60);
+});
+client.on('messageCreate', function (message) { return __awaiter(void 0, void 0, void 0, function () {
+    var botClientId, role;
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 botClientId = (_a = client.user) === null || _a === void 0 ? void 0 : _a.id;
-                if (message.author.id !== botClientId && process.env.LOGGING === "true") {
-                    console.log(message.author.username + ': ' + message.content);
+                if (message.author.id !== botClientId && message.channel.type !== "DM" && process.env.LOGGING === "true") {
+                    logger.logChat("[" + message.channel.guild.name + ":" + message.channel.guild.id + "][" + message.channel.name + ":" + message.channel.id + "][" + message.author.username + ":" + message.author.id + ":" + ((_b = message.member) === null || _b === void 0 ? void 0 : _b.nickname) + "]: " + message.content);
                 }
                 if (typeof botClientId === "undefined") {
-                    console.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');
+                    logger.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');
                     return [2 /*return*/];
                 }
                 if (message.author.id === botClientId) {
                     return [2 /*return*/];
                 }
-                if (!(process.env.NODE_ENV === "production" && message.channel.type === 'dm')) return [3 /*break*/, 2];
+                if (!(process.env.NODE_ENV === "production" && message.channel.type === 'DM')) return [3 /*break*/, 2];
                 return [4 /*yield*/, message.channel.send('Please only contact me via registered channels!')];
             case 1:
-                _b.sent();
+                _d.sent();
                 return [2 /*return*/];
             case 2:
                 if (typeof process.env.ALLOWED_CHANNELS === "undefined") {
-                    console.error('ALLOWED_CHANNELS has to be defined in .env!');
+                    logger.error('ALLOWED_CHANNELS has to be defined in .env!');
                     return [2 /*return*/];
                 }
                 if (process.env.NODE_ENV === "production" && !process.env.ALLOWED_CHANNELS.split(',').includes(message.channel.id)) {
                     return [2 /*return*/];
                 }
-                else if (process.env.NODE_ENV === "develop" && message.channel.type !== 'dm') {
+                else if (process.env.NODE_ENV === "develop" && message.channel.type !== 'DM') {
                     return [2 /*return*/];
                 }
-                if (message.content.startsWith('<@!' + botClientId + '>') || message.content.startsWith('<@' + botClientId + '>')) {
+                role = (_c = message.guild) === null || _c === void 0 ? void 0 : _c.roles.cache.find(function (r) { var _a; return r.name === ((_a = client.user) === null || _a === void 0 ? void 0 : _a.username); });
+                if (message.content.startsWith('<@!' + botClientId + '>') ||
+                    message.content.startsWith('<@' + botClientId + '>') ||
+                    (typeof role !== 'undefined' && message.content.startsWith('<@&' + role.id + '>'))) {
                     return [2 /*return*/, commandHandler.processMessage(message)];
                 }
                 return [2 /*return*/];
         }
     });
 }); });
-client.login(process.env.BOT_TOKEN).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var data, esiHealth, dateObj, dateString, fasCount;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, Pings_1.default.statusAll(client)];
-            case 1:
-                data = _b.sent();
-                esiHealth = Math.round(((data.esiHealth.green / data.esiHealth.total) * 100)) + '%';
-                dateObj = new Date();
-                dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                    ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
-                fasCount = fas.getLength();
-                (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
-                    type: 'WATCHING',
-                    name: "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Updated: " + dateString + " | Index: " + fasCount + " entries"
-                });
-                return [2 /*return*/];
-        }
-    });
-}); }).catch(console.error);
+client.login(process.env.BOT_TOKEN).catch(logger.error);

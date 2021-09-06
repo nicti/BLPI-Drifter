@@ -56,62 +56,70 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var discord_js_1 = require("discord.js");
-var Health = /** @class */ (function (_super) {
-    __extends(Health, _super);
-    function Health(esi, jove, logger, client, fas, pings) {
-        var _this = _super.call(this, esi, jove, logger) || this;
-        _this.client = client;
-        _this.fas = fas;
-        _this.pings = pings;
-        return _this;
+var child_process_1 = require("child_process");
+var changelog_parser_1 = __importDefault(require("changelog-parser"));
+var Changelog = /** @class */ (function (_super) {
+    __extends(Changelog, _super);
+    function Changelog() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Health.prototype.execute = function (message, data) {
+    Changelog.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var attachment, info, esiHealth, embeded, dateObj, dateString;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var limit, log, versions, versionStr, embed, _i, _a, version, str, _b, _c, _d, key, value;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
-                        attachment = new discord_js_1.MessageAttachment('assets/blpi.png', 'blpi.png');
-                        return [4 /*yield*/, this.pings.statusAll(this.client)];
+                        limit = 3;
+                        return [4 /*yield*/, changelog_parser_1.default('./CHANGELOG.md')];
                     case 1:
-                        info = _a.sent();
-                        esiHealth = Math.round(((info.esiHealth.green / info.esiHealth.total) * 100)) + '%';
-                        embeded = new discord_js_1.MessageEmbed();
-                        embeded.setTitle('Health Report');
-                        embeded.addField('ESI Ping', info.esiPing, true);
-                        embeded.addField('ESI Health', esiHealth, true);
-                        embeded.addField('Discord Ping', info.discordPing + ' ms', true);
-                        embeded.addField('Discord Health', info.discordHealth, true);
-                        embeded.addField('Index', this.fas.getLength() + ' entries', true);
-                        embeded.addField('Mode', process.env.NODE_ENV, true);
-                        if (info.esiPing === "ok" && info.discordHealth === "GREEN") {
-                            embeded.setColor('GREEN');
-                        }
-                        else if (info.esiPing !== "ok" && info.discordHealth !== "GREEN") {
-                            embeded.setColor("RED");
-                        }
-                        else if (info.esiPing !== "ok" || info.discordHealth !== "GREEN") {
-                            embeded.setColor("YELLOW");
-                        }
-                        embeded.setThumbnail('attachment://blpi.png');
-                        dateObj = new Date();
-                        dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
-                            ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
-                        embeded.setFooter(dateString);
-                        return [4 /*yield*/, message.channel.send({ embeds: [embeded], files: [attachment] })];
+                        log = _e.sent();
+                        versions = log.versions;
+                        if (!(data[0] && !data[0].includes('.'))) return [3 /*break*/, 2];
+                        limit = parseInt(data[0]);
+                        return [3 /*break*/, 4];
                     case 2:
-                        _a.sent();
+                        if (!(data[0] && data[0].includes('.'))) return [3 /*break*/, 4];
+                        versions = versions.filter(function (o) { return o.version === data[0]; });
+                        limit = 1;
+                        if (!(versions.length === 0)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, message.reply('Version string `' + data[0] + '` was not found!')];
+                    case 3:
+                        _e.sent();
+                        return [2 /*return*/];
+                    case 4:
+                        versionStr = new TextDecoder().decode(child_process_1.execSync("git describe --tag")).replace('\n', '');
+                        embed = new discord_js_1.MessageEmbed();
+                        embed.setTitle('Changelog');
+                        embed.setDescription("Current version: **" + versionStr + "**");
+                        for (_i = 0, _a = versions.splice(0, limit); _i < _a.length; _i++) {
+                            version = _a[_i];
+                            str = '';
+                            for (_b = 0, _c = Object.entries(version.parsed); _b < _c.length; _b++) {
+                                _d = _c[_b], key = _d[0], value = _d[1];
+                                if (key === '_')
+                                    continue;
+                                str += '**' + key + '**\n-';
+                                // @ts-ignore
+                                str += value.join('\n-');
+                                str += '\n';
+                            }
+                            embed.addField(version.version, '>>> ' + str + '');
+                        }
+                        embed.setURL('https://github.com/nicti/blpi-drifter/blob/main/README.md');
+                        return [4 /*yield*/, message.reply({ embeds: [embed] })];
+                    case 5:
+                        _e.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    Health.prototype.help = function () {
-        return { name: "`health`", value: "Reports health of connected APIs" };
-    };
-    Health.prototype.getAccessLevel = function () {
+    Changelog.prototype.getAccessLevel = function () {
         return 0;
     };
-    return Health;
+    Changelog.prototype.help = function () {
+        return { name: "`changelog`", value: "Displays current tag and the changelog" };
+    };
+    return Changelog;
 }(CommandInterface_1.default));
-exports.default = Health;
+exports.default = Changelog;

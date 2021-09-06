@@ -58,8 +58,8 @@ var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var mysql_1 = __importDefault(require("mysql"));
 var PFLoad = /** @class */ (function (_super) {
     __extends(PFLoad, _super);
-    function PFLoad(esi, jove) {
-        var _this = _super.call(this, esi, jove) || this;
+    function PFLoad(esi, jove, logger) {
+        var _this = _super.call(this, esi, jove, logger) || this;
         _this.connection = mysql_1.default.createConnection({
             host: process.env.MYSQL_HOST,
             user: process.env.MYSQL_USER,

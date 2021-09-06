@@ -57,8 +57,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var Set = /** @class */ (function (_super) {
     __extends(Set, _super);
-    function Set(esi, jove, fas) {
-        var _this = _super.call(this, esi, jove) || this;
+    function Set(esi, jove, logger, fas) {
+        var _this = _super.call(this, esi, jove, logger) || this;
         _this.fas = fas;
         return _this;
     }
