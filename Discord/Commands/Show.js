@@ -66,7 +66,7 @@ var Show = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        regionSearchName = data[0];
+                        regionSearchName = data.join(' ');
                         if (!(regionSearchName.length < 3)) return [3 /*break*/, 2];
                         return [4 /*yield*/, message.channel.send('Region name must be at least 3 characters long.')];
                     case 1:

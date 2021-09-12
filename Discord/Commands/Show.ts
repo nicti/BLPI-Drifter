@@ -3,7 +3,7 @@ import {Message} from "discord.js";
 
 export default class Show extends CommandInterface {
     async execute(message: Message, data: string[]): Promise<any> {
-        let regionSearchName = data[0];
+        let regionSearchName = data.join(' ');
         if (regionSearchName.length < 3) {
             await message.channel.send('Region name must be at least 3 characters long.');
             return;
