@@ -19,7 +19,7 @@ export default class Changelog extends CommandInterface
                 return;
             }
         }
-        let versionStr = new TextDecoder().decode(execSync("git describe --tag")).replace('\n','');
+        let versionStr = new TextDecoder().decode(execSync("git describe --tag --always")).replace('\n','');
         let embed = new MessageEmbed();
         embed.setTitle('Changelog');
         embed.setDescription(`Current version: **${versionStr}**`);

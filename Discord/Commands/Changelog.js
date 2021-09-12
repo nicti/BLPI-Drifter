@@ -87,7 +87,7 @@ var Changelog = /** @class */ (function (_super) {
                         _e.sent();
                         return [2 /*return*/];
                     case 4:
-                        versionStr = new TextDecoder().decode(child_process_1.execSync("git describe --tag")).replace('\n', '');
+                        versionStr = new TextDecoder().decode(child_process_1.execSync("git describe --tag --always")).replace('\n', '');
                         embed = new discord_js_1.MessageEmbed();
                         embed.setTitle('Changelog');
                         embed.setDescription("Current version: **" + versionStr + "**");
