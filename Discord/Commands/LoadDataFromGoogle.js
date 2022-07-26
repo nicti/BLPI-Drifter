@@ -62,18 +62,23 @@ var LoadDataFromGoogle = /** @class */ (function (_super) {
     }
     LoadDataFromGoogle.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var allowed;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Are you sure you want to reload all the data? This will delete saved data!')];
+                    case 0: 
+                    // As CCP disabled the search endpoint for public usage, this function can no longer run reliably
+                    /*let allowed = await this.provideYesNoPrompt(message,'Are you sure you want to reload all the data? This will delete saved data!');
+                    if (allowed) {
+                        await this.jove.importFromGoogle(message);
+                    }*/
+                    return [4 /*yield*/, message.reply('As CCP disabled the search endpoint for public usage, this function can no longer run reliably. Please refer to the github repo to get a jove system database.')];
                     case 1:
-                        allowed = _a.sent();
-                        if (!allowed) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.jove.importFromGoogle(message)];
-                    case 2:
+                        // As CCP disabled the search endpoint for public usage, this function can no longer run reliably
+                        /*let allowed = await this.provideYesNoPrompt(message,'Are you sure you want to reload all the data? This will delete saved data!');
+                        if (allowed) {
+                            await this.jove.importFromGoogle(message);
+                        }*/
                         _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        return [2 /*return*/];
                 }
             });
         });

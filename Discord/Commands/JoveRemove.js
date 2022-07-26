@@ -62,62 +62,59 @@ var JoveRemove = /** @class */ (function (_super) {
     }
     JoveRemove.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var system, searchResults, esiSystemData, systemName, systemId, esiConstellationData, esiRegionData, regionName, existence, rundown;
+            var systemSearchName, ids, solarSystemId, esiSystemData, systemName, systemId, esiConstellationData, esiRegionData, regionName, existence, rundown;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        system = data[0];
-                        if (!(system.length < 3)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.channel.send('System name must be at least 3 characters long.')];
+                        systemSearchName = data.join(' ');
+                        return [4 /*yield*/, this.esi.post('/v1/universe/ids/', [systemSearchName])];
                     case 1:
+                        ids = (_a.sent()).data;
+                        if (!ids['systems']) return [3 /*break*/, 14];
+                        if (!(ids['systems'].length !== 1)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, message.reply('`' + systemSearchName + '` returned multiple results. Please enter the exact system name!')];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=false&search=' + system)];
                     case 3:
-                        searchResults = (_a.sent()).data.solar_system;
-                        if (!(typeof searchResults === "undefined")) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.reply('`' + system + '` did not return a valid object. Please double check the entered system name!')];
+                        solarSystemId = ids['systems'][0].id;
+                        return [4 /*yield*/, this.esi.get('/v4/universe/systems/' + solarSystemId + '/')];
                     case 4:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 5:
-                        if (!(searchResults.length > 1)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, message.reply('`' + system + '` returned multiple results. Please enter the exact system name!')];
-                    case 6:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 7: return [4 /*yield*/, this.esi.get('/v4/universe/systems/' + searchResults[0] + '/')];
-                    case 8:
                         esiSystemData = (_a.sent()).data;
                         systemName = esiSystemData.name;
                         systemId = esiSystemData.system_id;
                         return [4 /*yield*/, this.esi.get('/v1/universe/constellations/' + esiSystemData.constellation_id + '/')];
-                    case 9:
+                    case 5:
                         esiConstellationData = (_a.sent()).data;
                         return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + esiConstellationData.region_id + '/')];
-                    case 10:
+                    case 6:
                         esiRegionData = (_a.sent()).data;
                         regionName = esiRegionData.name;
                         return [4 /*yield*/, this.jove.findById(systemId)];
-                    case 11:
+                    case 7:
                         existence = _a.sent();
-                        if (!!existence) return [3 /*break*/, 13];
+                        if (!!existence) return [3 /*break*/, 9];
                         return [4 /*yield*/, message.reply('System `' + systemName + '` is not in the list of jove systems!')];
-                    case 12:
+                    case 8:
                         _a.sent();
                         return [2 /*return*/];
-                    case 13: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Do you want to remove the system `' + systemName + '` in the region `' + regionName + '` from the list of jove systems?')];
-                    case 14:
+                    case 9: return [4 /*yield*/, this.provideYesNoPrompt(message, 'Do you want to remove the system `' + systemName + '` in the region `' + regionName + '` from the list of jove systems?')];
+                    case 10:
                         rundown = _a.sent();
-                        if (!rundown) return [3 /*break*/, 17];
+                        if (!rundown) return [3 /*break*/, 13];
                         return [4 /*yield*/, this.jove.removeSystem(regionName, systemName)];
-                    case 15:
+                    case 11:
                         _a.sent();
                         return [4 /*yield*/, message.reply('System `' + systemName + '` removed from region `' + regionName + '`!')];
-                    case 16:
+                    case 12:
                         _a.sent();
-                        _a.label = 17;
-                    case 17: return [2 /*return*/];
+                        _a.label = 13;
+                    case 13: return [3 /*break*/, 16];
+                    case 14: return [4 /*yield*/, message.reply('`' + systemSearchName + '` did not return a valid object. Please double check the entered system name!')];
+                    case 15:
+                        _a.sent();
+                        _a.label = 16;
+                    case 16: return [2 /*return*/];
                 }
             });
         });

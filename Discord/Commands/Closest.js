@@ -62,34 +62,24 @@ var Closest = /** @class */ (function (_super) {
     }
     Closest.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var systemSearchName, searchResults, solarSystemId, regions, pairs, _i, _a, _b, region, regionData, _c, _d, _e, system_1, systemData, i, j, chunk, chunks, routes, k, chunk_1, request, route, shortest, system, date, dateObj, whList, str;
+            var systemSearchName, ids, solarSystemId, regions, pairs, _i, _a, _b, region, regionData, _c, _d, _e, system_1, systemData, i, j, chunk, chunks, routes, k, chunk_1, request, route, shortest, system, date, dateObj, whList, str;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
-                        systemSearchName = data[0];
-                        if (!(systemSearchName.length < 3)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.channel.send('Region name must be at least 3 characters long.')];
+                        systemSearchName = data.join(' ');
+                        return [4 /*yield*/, this.esi.post('/v1/universe/ids/', [systemSearchName])];
                     case 1:
-                        _f.sent();
-                        return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=false&search=' + systemSearchName)];
-                    case 3:
-                        searchResults = (_f.sent()).data.solar_system;
-                        if (!(typeof searchResults === "undefined")) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.channel.send('Could not find system matching `' + systemSearchName + '`.')];
-                    case 4:
-                        _f.sent();
-                        return [2 /*return*/];
-                    case 5:
-                        if (!(searchResults.length > 1)) return [3 /*break*/, 7];
+                        ids = (_f.sent()).data;
+                        if (!ids['systems']) return [3 /*break*/, 11];
+                        if (!(ids['systems'].length !== 1)) return [3 /*break*/, 3];
                         return [4 /*yield*/, message.channel.send('Search resulted in several hits, please specify.')];
-                    case 6:
+                    case 2:
                         _f.sent();
                         return [2 /*return*/];
-                    case 7:
-                        solarSystemId = searchResults[0];
+                    case 3:
+                        solarSystemId = ids['systems'][0].id;
                         return [4 /*yield*/, this.jove.getRegions()];
-                    case 8:
+                    case 4:
                         regions = _f.sent();
                         pairs = [];
                         for (_i = 0, _a = Object.entries(regions); _i < _a.length; _i++) {
@@ -101,30 +91,31 @@ var Closest = /** @class */ (function (_super) {
                                 }
                             }
                         }
-                        chunk = 100, chunks = [];
+                        i = void 0, j = void 0, chunk = 100, chunks = [];
                         for (i = 0, j = pairs.length; i < j; i += chunk) {
                             chunks.push(pairs.slice(i, i + chunk));
                         }
                         routes = [];
                         k = 0;
-                        _f.label = 9;
-                    case 9:
-                        if (!(k < chunks.length)) return [3 /*break*/, 12];
+                        _f.label = 5;
+                    case 5:
+                        if (!(k < chunks.length)) return [3 /*break*/, 8];
                         chunk_1 = chunks[k];
                         request = '/v1/route/30000380/' + solarSystemId + '/?connections=' + chunk_1.join(',');
                         return [4 /*yield*/, this.esi.get(request)];
-                    case 10:
+                    case 6:
                         route = (_f.sent()).data;
                         routes.push(route);
-                        _f.label = 11;
-                    case 11:
+                        _f.label = 7;
+                    case 7:
                         k++;
-                        return [3 /*break*/, 9];
-                    case 12:
+                        return [3 /*break*/, 5];
+                    case 8:
                         shortest = routes.reduce(function (p, c) { return p.length > c.length ? c : p; }, { length: Infinity });
                         return [4 /*yield*/, this.jove.findById(shortest[1])];
-                    case 13:
+                    case 9:
                         system = _f.sent();
+                        date = void 0;
                         if (system.data.updated === "") {
                             date = "";
                         }
@@ -139,9 +130,14 @@ var Closest = /** @class */ (function (_super) {
                         }
                         str = system.name + ': ' + whList + ' [' + date + ']';
                         return [4 /*yield*/, message.reply('Closest Jove system is ' + system.name + '!```' + str + '```https://evemaps.dotlan.net/map/' + system.region + '/' + system.name)];
-                    case 14:
+                    case 10:
                         _f.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 13];
+                    case 11: return [4 /*yield*/, message.channel.send('Could not find system matching `' + systemSearchName + '`.')];
+                    case 12:
+                        _f.sent();
+                        _f.label = 13;
+                    case 13: return [2 /*return*/];
                 }
             });
         });
