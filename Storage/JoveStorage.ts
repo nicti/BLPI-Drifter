@@ -51,6 +51,7 @@ export default class JoveStorage {
                 let esiSystem = null;
                 do {
                     try {
+                        //TODO: Rework/Remove
                         esiSystem = (await this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=true&search='+drifterRegion[j])).data.solar_system;
                     } catch (e) {
                         esiSystem = null;

@@ -93,6 +93,7 @@ var JoveStorage = /** @class */ (function () {
                         _b.trys.push([7, 9, , 10]);
                         return [4 /*yield*/, this.esi.get('/v2/search/?categories=solar_system&datasource=tranquility&language=en&strict=true&search=' + drifterRegion[j])];
                     case 8:
+                        //TODO: Rework/Remove
                         esiSystem = (_b.sent()).data.solar_system;
                         return [3 /*break*/, 10];
                     case 9:

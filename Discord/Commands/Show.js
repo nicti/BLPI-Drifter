@@ -62,39 +62,33 @@ var Show = /** @class */ (function (_super) {
     }
     Show.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var regionSearchName, searchResults, region, regionName, joveRegionalInfo, str, link, key, systems, date, dateObj;
+            var regionSearchName, ids, regionId, region, regionName, joveRegionalInfo, str, link, key, systems, date, dateObj;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        data.forEach(function (e, i) { return data[i] = _this.capitalizeFirstLetter(e.toLowerCase()); });
                         regionSearchName = data.join(' ');
-                        if (!(regionSearchName.length < 3)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, message.channel.send('Region name must be at least 3 characters long.')];
+                        return [4 /*yield*/, this.esi.post('/v1/universe/ids/', [regionSearchName])];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 2: return [4 /*yield*/, this.esi.get('/v2/search/?categories=region&datasource=tranquility&language=en&strict=false&search=' + regionSearchName)];
-                    case 3:
-                        searchResults = (_a.sent()).data.region;
-                        if (!(typeof searchResults === "undefined")) return [3 /*break*/, 5];
-                        return [4 /*yield*/, message.channel.send('Could not find region matching `' + regionSearchName + '`.')];
-                    case 4:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 5:
-                        if (!(searchResults.length > 1)) return [3 /*break*/, 7];
+                        ids = (_a.sent()).data;
+                        if (!ids['regions']) return [3 /*break*/, 8];
+                        if (!(ids['regions'].length !== 1)) return [3 /*break*/, 3];
                         return [4 /*yield*/, message.channel.send('Search resulted in several hits, please specify.')];
-                    case 6:
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
-                    case 7: return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + searchResults[0] + '/')];
-                    case 8:
+                    case 3:
+                        regionId = ids['regions'][0].id;
+                        return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + regionId + '/')];
+                    case 4:
                         region = (_a.sent()).data;
                         regionName = region.name.replace(/ /g, '_');
                         return [4 /*yield*/, this.jove.resetOutdated(regionName)];
-                    case 9:
+                    case 5:
                         _a.sent();
                         return [4 /*yield*/, this.jove.getForRegion(regionName)];
-                    case 10:
+                    case 6:
                         joveRegionalInfo = _a.sent();
                         str = '';
                         link = [];
@@ -118,9 +112,14 @@ var Show = /** @class */ (function (_super) {
                             }
                         }
                         return [4 /*yield*/, message.channel.send(region.name + ':```' + str + '```https://evemaps.dotlan.net/map/' + regionName + '/' + link.join(':'))];
-                    case 11:
+                    case 7:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 10];
+                    case 8: return [4 /*yield*/, message.channel.send('Could not find region matching `' + regionSearchName + '`.')];
+                    case 9:
+                        _a.sent();
+                        _a.label = 10;
+                    case 10: return [2 /*return*/];
                 }
             });
         });
@@ -130,6 +129,9 @@ var Show = /** @class */ (function (_super) {
     };
     Show.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Show.prototype.capitalizeFirstLetter = function (str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     };
     return Show;
 }(CommandInterface_1.default));

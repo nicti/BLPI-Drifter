@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+### Bugfix
+* Fixed problems resulting out of the deactivation of the `/search/` endpoint by CCP
+  * Removed all usages of the `/search/` endpoint
+  * Permanently disabled `LoadDataFromGoogle` command as it relies to heavily on the `/search/` endpoint
+
 ## 1.0.3
 ### Bugfix
 * Show command now correctly merges search phrases to search for complex region names
