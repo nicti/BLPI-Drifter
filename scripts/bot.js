@@ -47,7 +47,7 @@ var Commands_1 = __importDefault(require("../Discord/Commands"));
 var Pings_1 = __importDefault(require("../Bot/Pings"));
 var FAS_1 = __importDefault(require("../Storage/FAS"));
 var AdvancedLogger_1 = __importDefault(require("../utils/AdvancedLogger"));
-dotenv_flow_1.config();
+(0, dotenv_flow_1.config)();
 var logger = new AdvancedLogger_1.default();
 var esi = axios_1.default.create({
     baseURL: 'https://esi.evetech.net',
@@ -98,7 +98,7 @@ client.once('ready', function () {
                     dateString = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
                         ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ':' + dateObj.getUTCSeconds().toString().padStart(2, '0') + ' UTC';
                     fasCount = fas.getLength();
-                    name = "ESI Ping: " + data.esiPing + " | ESI Health: " + esiHealth + " | Discord Ping: " + data.discordPing + "ms | Discord Health: " + data.discordHealth + " | Index: " + fasCount + " entries | Updated: " + dateString;
+                    name = "ESI Ping: ".concat(data.esiPing, " | ESI Health: ").concat(esiHealth, " | Discord Ping: ").concat(data.discordPing, "ms | Discord Health: ").concat(data.discordHealth, " | Index: ").concat(fasCount, " entries | Updated: ").concat(dateString);
                     (_a = client.user) === null || _a === void 0 ? void 0 : _a.setActivity({
                         type: 'WATCHING',
                         name: name
@@ -125,7 +125,7 @@ client.on('messageCreate', function (message) { return __awaiter(void 0, void 0,
             case 0:
                 botClientId = (_a = client.user) === null || _a === void 0 ? void 0 : _a.id;
                 if (message.author.id !== botClientId && message.channel.type !== "DM" && process.env.LOGGING === "true") {
-                    logger.logChat("[" + message.channel.guild.name + ":" + message.channel.guild.id + "][" + message.channel.name + ":" + message.channel.id + "][" + message.author.username + ":" + message.author.id + ":" + ((_b = message.member) === null || _b === void 0 ? void 0 : _b.nickname) + "]: " + message.content);
+                    logger.logChat("[".concat(message.channel.guild.name, ":").concat(message.channel.guild.id, "][").concat(message.channel.name, ":").concat(message.channel.id, "][").concat(message.author.username, ":").concat(message.author.id, ":").concat((_b = message.member) === null || _b === void 0 ? void 0 : _b.nickname, "]: ").concat(message.content));
                 }
                 if (typeof botClientId === "undefined") {
                     logger.error('Bot Client ID is not defined! The bot likely did not connect to discord correctly!');

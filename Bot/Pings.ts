@@ -43,7 +43,7 @@ export default class Pings {
             } else {
                 data = data.data;
             }
-        } catch (e) {
+        } catch (e: any) {
             status = e.response.status;
         }
         let length;
