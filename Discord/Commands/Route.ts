@@ -61,7 +61,7 @@ export default class Route extends CommandInterface {
         })
         let pad1 = Math.max(...loc1.map((e: any) => e.name.length)) + 1
         let pad2 = Math.max(...loc2.map((e: any) => e.name.length)) + 1
-        let pad = Math.max(pad1, pad2)
+        let pad = Math.max(pad1, pad2, regions[0].length, regions[1].length)
         let response = `\`\`\`${regions[0].padEnd(pad, ' ')} <=====> ${regions[1].padEnd(pad, ' ')}| Oldest\n${''.padEnd(((pad * 2) + 9), '=')}+${''.padEnd(20, '=')}\n`
         let parts: string[] = []
         if (pairs.length === 0) {
