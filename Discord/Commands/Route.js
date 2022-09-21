@@ -163,7 +163,7 @@ var Route = /** @class */ (function (_super) {
                         });
                         pad1 = Math.max.apply(Math, loc1.map(function (e) { return e.name.length; })) + 1;
                         pad2 = Math.max.apply(Math, loc2.map(function (e) { return e.name.length; })) + 1;
-                        pad = Math.max(pad1, pad2);
+                        pad = Math.max(pad1, pad2, regions[0].length, regions[1].length);
                         response = "```".concat(regions[0].padEnd(pad, ' '), " <=====> ").concat(regions[1].padEnd(pad, ' '), "| Oldest\n").concat(''.padEnd(((pad * 2) + 9), '='), "+").concat(''.padEnd(20, '='), "\n");
                         parts = [];
                         if (!(pairs.length === 0)) return [3 /*break*/, 8];

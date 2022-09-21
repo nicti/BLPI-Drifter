@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+### Bugfix
+* Fixed formatting for `route` response due to too long region names
+
 ## 1.1.1
 ### Changes
 * Added `route` command to find routes between 2 regions
