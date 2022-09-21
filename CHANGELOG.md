@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+### Changes
+* Added `route` command to find routes between 2 regions
+
 ## 1.1.0
 ### Bugfix
 * Fixed problems resulting out of the deactivation of the `/search/` endpoint by CCP

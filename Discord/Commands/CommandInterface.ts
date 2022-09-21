@@ -35,7 +35,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
         if (reaction.first()?.emoji.name === '✅') {
             try {
                 await reactiveMsg.reactions.removeAll();
-            } catch (e) {
+            } catch (e: any) {
                 if (e.code === 50013) {
                     let textInfo = '';
                     if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
@@ -49,7 +49,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
             try {
                 await reactiveMsg.reactions.removeAll();
-            } catch (e) {
+            } catch (e: any) {
                 if (e.code === 50013) {
                     let textInfo = '';
                     if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
@@ -64,7 +64,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
         } else if (reaction.first()?.emoji.name === '❎') {
             try {
                 await reactiveMsg.reactions.removeAll();
-            } catch (e) {
+            } catch (e: any) {
                 if (e.code === 50013) {
                     let textInfo = '';
                     if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
@@ -78,7 +78,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
             await reactiveMsg.edit('~~' + reactiveMsg.content + '~~');
             try {
                 await reactiveMsg.reactions.removeAll();
-            } catch (e) {
+            } catch (e: any) {
                 if (e.code === 50013) {
                     let textInfo = '';
                     if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {
@@ -93,7 +93,7 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
         } else {
             try {
                 await reactiveMsg.reactions.removeAll();
-            } catch (e) {
+            } catch (e: any) {
                 if (e.code === 50013) {
                     let textInfo = '';
                     if (!(reactiveMsg.channel instanceof DMChannel) && !(reactiveMsg.channel.partial)) {

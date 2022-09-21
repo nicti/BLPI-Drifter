@@ -75,9 +75,9 @@ var CommandInterface = /** @class */ (function () {
                         if (e_1.code === 50013) {
                             textInfo = '';
                             if (!(reactiveMsg.channel instanceof discord_js_1.DMChannel) && !(reactiveMsg.channel.partial)) {
-                                textInfo = reactiveMsg.channel.guild.name + " > " + reactiveMsg.channel.name;
+                                textInfo = "".concat(reactiveMsg.channel.guild.name, " > ").concat(reactiveMsg.channel.name);
                             }
-                            this.logger.warn("Bot is missing Edit Messages permissions in channel " + textInfo + " [" + reactiveMsg.channel.id + "]");
+                            this.logger.warn("Bot is missing Edit Messages permissions in channel ".concat(textInfo, " [").concat(reactiveMsg.channel.id, "]"));
                         }
                         else if (e_1.code !== 50003) {
                             throw e_1;
@@ -98,9 +98,9 @@ var CommandInterface = /** @class */ (function () {
                         if (e_2.code === 50013) {
                             textInfo = '';
                             if (!(reactiveMsg.channel instanceof discord_js_1.DMChannel) && !(reactiveMsg.channel.partial)) {
-                                textInfo = reactiveMsg.channel.guild.name + " > " + reactiveMsg.channel.name;
+                                textInfo = "".concat(reactiveMsg.channel.guild.name, " > ").concat(reactiveMsg.channel.name);
                             }
-                            this.logger.warn("Bot is missing Edit Messages permissions in channel " + textInfo + " [" + reactiveMsg.channel.id + "]");
+                            this.logger.warn("Bot is missing Edit Messages permissions in channel ".concat(textInfo, " [").concat(reactiveMsg.channel.id, "]"));
                         }
                         else if (e_2.code !== 50003) {
                             throw e_2;
@@ -121,9 +121,9 @@ var CommandInterface = /** @class */ (function () {
                         if (e_3.code === 50013) {
                             textInfo = '';
                             if (!(reactiveMsg.channel instanceof discord_js_1.DMChannel) && !(reactiveMsg.channel.partial)) {
-                                textInfo = reactiveMsg.channel.guild.name + " > " + reactiveMsg.channel.name;
+                                textInfo = "".concat(reactiveMsg.channel.guild.name, " > ").concat(reactiveMsg.channel.name);
                             }
-                            this.logger.warn("Bot is missing Edit Messages permissions in channel " + textInfo + " [" + reactiveMsg.channel.id + "]");
+                            this.logger.warn("Bot is missing Edit Messages permissions in channel ".concat(textInfo, " [").concat(reactiveMsg.channel.id, "]"));
                         }
                         else if (e_3.code !== 50003) {
                             throw e_3;
@@ -144,9 +144,9 @@ var CommandInterface = /** @class */ (function () {
                         if (e_4.code === 50013) {
                             textInfo = '';
                             if (!(reactiveMsg.channel instanceof discord_js_1.DMChannel) && !(reactiveMsg.channel.partial)) {
-                                textInfo = reactiveMsg.channel.guild.name + " > " + reactiveMsg.channel.name;
+                                textInfo = "".concat(reactiveMsg.channel.guild.name, " > ").concat(reactiveMsg.channel.name);
                             }
-                            this.logger.warn("Bot is missing Edit Messages permissions in channel " + textInfo + " [" + reactiveMsg.channel.id + "]");
+                            this.logger.warn("Bot is missing Edit Messages permissions in channel ".concat(textInfo, " [").concat(reactiveMsg.channel.id, "]"));
                         }
                         else if (e_4.code !== 50003) {
                             throw e_4;
@@ -164,9 +164,9 @@ var CommandInterface = /** @class */ (function () {
                         if (e_5.code === 50013) {
                             textInfo = '';
                             if (!(reactiveMsg.channel instanceof discord_js_1.DMChannel) && !(reactiveMsg.channel.partial)) {
-                                textInfo = reactiveMsg.channel.guild.name + " > " + reactiveMsg.channel.name;
+                                textInfo = "".concat(reactiveMsg.channel.guild.name, " > ").concat(reactiveMsg.channel.name);
                             }
-                            this.logger.warn("Bot is missing Edit Messages permissions in channel " + textInfo + " [" + reactiveMsg.channel.id + "]");
+                            this.logger.warn("Bot is missing Edit Messages permissions in channel ".concat(textInfo, " [").concat(reactiveMsg.channel.id, "]"));
                         }
                         else if (e_5.code !== 50003) {
                             throw e_5;

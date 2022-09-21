@@ -70,7 +70,7 @@ var Changelog = /** @class */ (function (_super) {
                 switch (_e.label) {
                     case 0:
                         limit = 3;
-                        return [4 /*yield*/, changelog_parser_1.default('./CHANGELOG.md')];
+                        return [4 /*yield*/, (0, changelog_parser_1.default)('./CHANGELOG.md')];
                     case 1:
                         log = _e.sent();
                         versions = log.versions;
@@ -87,10 +87,10 @@ var Changelog = /** @class */ (function (_super) {
                         _e.sent();
                         return [2 /*return*/];
                     case 4:
-                        versionStr = new TextDecoder().decode(child_process_1.execSync("git describe --tag --always")).replace('\n', '');
+                        versionStr = new TextDecoder().decode((0, child_process_1.execSync)("git describe --tag --always")).replace('\n', '');
                         embed = new discord_js_1.MessageEmbed();
                         embed.setTitle('Changelog');
-                        embed.setDescription("Current version: **" + versionStr + "**");
+                        embed.setDescription("Current version: **".concat(versionStr, "**"));
                         for (_i = 0, _a = versions.splice(0, limit); _i < _a.length; _i++) {
                             version = _a[_i];
                             str = '';
