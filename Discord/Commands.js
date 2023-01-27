@@ -53,6 +53,7 @@ var JoveRemove_1 = __importDefault(require("./Commands/JoveRemove"));
 var PFLoad_1 = __importDefault(require("./Commands/PFLoad"));
 var Changelog_1 = __importDefault(require("./Commands/Changelog"));
 var Route_1 = __importDefault(require("./Commands/Route"));
+var Jita_1 = __importDefault(require("./Commands/Jita"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove, fas, logger, pings) {
         var _a;
@@ -76,6 +77,7 @@ var Commands = /** @class */ (function () {
         this.commands.set('pfload', (new PFLoad_1.default(this.esi, this.jove, this.logger)));
         this.commands.set('changelog', (new Changelog_1.default(this.esi, this.jove, this.logger)));
         this.commands.set('route', (new Route_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('jita', (new Jita_1.default(this.esi, this.jove, this.logger)));
         var admins = (_a = process.env.ADMINS) === null || _a === void 0 ? void 0 : _a.split(',');
         if (typeof admins === "undefined") {
             throw "Unable to find admins in .env file. Please specify admins in your .env file.";

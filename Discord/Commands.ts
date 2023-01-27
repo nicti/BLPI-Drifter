@@ -18,6 +18,7 @@ import AdvancedLogger from "../utils/AdvancedLogger";
 import Pings from "../Bot/Pings";
 import Changelog from "./Commands/Changelog";
 import Route from './Commands/Route'
+import Jita from './Commands/Jita'
 
 export default class Commands {
     client: Client;
@@ -50,6 +51,7 @@ export default class Commands {
         this.commands.set('pfload', (new PFLoad(this.esi, this.jove, this.logger)));
         this.commands.set('changelog', (new Changelog(this.esi, this.jove, this.logger)));
         this.commands.set('route', (new Route(this.esi, this.jove, this.logger)));
+        this.commands.set('jita', (new Jita(this.esi, this.jove, this.logger)));
 
         let admins = process.env.ADMINS?.split(',');
         if (typeof admins === "undefined") {
