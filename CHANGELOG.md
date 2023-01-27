@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+### Changes
+* Added `jita` command to find routes between Jita and a region
+
 ## 1.1.2
 ### Bugfix
 * Fixed formatting for `route` response due to too long region names
