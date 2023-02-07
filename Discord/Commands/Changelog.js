@@ -58,11 +58,17 @@ var CommandInterface_1 = __importDefault(require("./CommandInterface"));
 var discord_js_1 = require("discord.js");
 var child_process_1 = require("child_process");
 var changelog_parser_1 = __importDefault(require("changelog-parser"));
+var builders_1 = require("@discordjs/builders");
 var Changelog = /** @class */ (function (_super) {
     __extends(Changelog, _super);
     function Changelog() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Changelog.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('changelog')
+            .setDescription('Displays current tag and the changelog');
+    };
     Changelog.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var limit, log, versions, versionStr, embed, _i, _a, version, str, _b, _c, _d, key, value;
@@ -74,20 +80,7 @@ var Changelog = /** @class */ (function (_super) {
                     case 1:
                         log = _e.sent();
                         versions = log.versions;
-                        if (!(data[0] && !data[0].includes('.'))) return [3 /*break*/, 2];
-                        limit = parseInt(data[0]);
-                        return [3 /*break*/, 4];
-                    case 2:
-                        if (!(data[0] && data[0].includes('.'))) return [3 /*break*/, 4];
-                        versions = versions.filter(function (o) { return o.version === data[0]; });
-                        limit = 1;
-                        if (!(versions.length === 0)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, message.reply('Version string `' + data[0] + '` was not found!')];
-                    case 3:
-                        _e.sent();
-                        return [2 /*return*/];
-                    case 4:
-                        versionStr = new TextDecoder().decode((0, child_process_1.execSync)("git describe --tag --always")).replace('\n', '');
+                        versionStr = new TextDecoder().decode((0, child_process_1.execSync)('git describe --tag --always')).replace('\n', '');
                         embed = new discord_js_1.MessageEmbed();
                         embed.setTitle('Changelog');
                         embed.setDescription("Current version: **".concat(versionStr, "**"));
@@ -107,7 +100,7 @@ var Changelog = /** @class */ (function (_super) {
                         }
                         embed.setURL('https://github.com/nicti/blpi-drifter/blob/main/README.md');
                         return [4 /*yield*/, message.reply({ embeds: [embed] })];
-                    case 5:
+                    case 2:
                         _e.sent();
                         return [2 /*return*/];
                 }
@@ -118,7 +111,49 @@ var Changelog = /** @class */ (function (_super) {
         return 0;
     };
     Changelog.prototype.help = function () {
-        return { name: "`changelog`", value: "Displays current tag and the changelog" };
+        return { name: '`changelog`', value: 'Displays current tag and the changelog' };
+    };
+    Changelog.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            var limit, log, versions, versionStr, embed, fields, _i, _a, version, str, _b, _c, _d, key, value;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        if (!interaction.isCommand()) return [3 /*break*/, 3];
+                        limit = 3;
+                        return [4 /*yield*/, (0, changelog_parser_1.default)('./CHANGELOG.md')];
+                    case 1:
+                        log = _e.sent();
+                        versions = log.versions;
+                        versionStr = new TextDecoder().decode((0, child_process_1.execSync)('git describe --tag --always')).replace('\n', '');
+                        embed = new discord_js_1.MessageEmbed();
+                        embed.setTitle('Changelog');
+                        embed.setDescription("Current version: **".concat(versionStr, "**"));
+                        fields = [];
+                        for (_i = 0, _a = versions.splice(0, limit); _i < _a.length; _i++) {
+                            version = _a[_i];
+                            str = '';
+                            for (_b = 0, _c = Object.entries(version.parsed); _b < _c.length; _b++) {
+                                _d = _c[_b], key = _d[0], value = _d[1];
+                                if (key === '_')
+                                    continue;
+                                str += '**' + key + '**\n-';
+                                // @ts-ignore
+                                str += value.join('\n-');
+                                str += '\n';
+                            }
+                            fields.push({ name: version.version, value: '>>> ' + str + '' });
+                        }
+                        embed.addFields(fields);
+                        embed.setURL('https://github.com/nicti/blpi-drifter/blob/main/README.md');
+                        return [4 /*yield*/, interaction.reply({ embeds: [embed], ephemeral: true })];
+                    case 2:
+                        _e.sent();
+                        _e.label = 3;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Changelog;
 }(CommandInterface_1.default));

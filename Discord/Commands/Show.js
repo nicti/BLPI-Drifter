@@ -55,11 +55,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Show = /** @class */ (function (_super) {
     __extends(Show, _super);
-    function Show() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Show(esi, jove, logger, fas) {
+        var _this = _super.call(this, esi, jove, logger) || this;
+        _this.fas = fas;
+        return _this;
     }
+    Show.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('show')
+            .setDescription('Shows all drifter data for a given region')
+            .addStringOption(function (option) {
+            return option.setName('region')
+                .setDescription('Region name')
+                .setRequired(true)
+                .setAutocomplete(true);
+        })
+            .addBooleanOption(function (option) {
+            return option.setName('show_to_all')
+                .setDescription('Show to all')
+                .setRequired(false);
+        });
+    };
     Show.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var regionSearchName, ids, regionId, region, regionName, joveRegionalInfo, str, link, key, systems, date, dateObj;
@@ -132,6 +151,77 @@ var Show = /** @class */ (function (_super) {
     };
     Show.prototype.capitalizeFirstLetter = function (str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    Show.prototype.executeInteraction = function (interaction) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var focus_1, filtered, region, show_to_all, ids, regionId, region_1, regionName, joveRegionalInfo, str, link, key, systems, date, dateObj;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!interaction.isAutocomplete()) return [3 /*break*/, 1];
+                        focus_1 = interaction.options.getFocused(true);
+                        if (focus_1.name === 'region') {
+                            filtered = this.fas.getRegions().filter(function (e) { return e.toLowerCase().startsWith(focus_1.value.toLowerCase()); }).slice(0, 25);
+                            interaction.respond(filtered.map(function (choices) { return ({ name: choices, value: choices }); }));
+                        }
+                        return [3 /*break*/, 10];
+                    case 1:
+                        if (!interaction.isCommand()) return [3 /*break*/, 10];
+                        region = interaction.options.getString('region', true);
+                        show_to_all = (_a = interaction.options.getBoolean('show_to_all', false)) !== null && _a !== void 0 ? _a : false;
+                        return [4 /*yield*/, this.esi.post('/v1/universe/ids/', [region])];
+                    case 2:
+                        ids = (_b.sent()).data;
+                        if (!ids['regions']) return [3 /*break*/, 8];
+                        if (!(ids['regions'].length !== 1)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, interaction.reply('Search resulted in several hits, please specify.')];
+                    case 3:
+                        _b.sent();
+                        return [2 /*return*/];
+                    case 4:
+                        regionId = ids['regions'][0].id;
+                        return [4 /*yield*/, this.esi.get('/v1/universe/regions/' + regionId + '/')];
+                    case 5:
+                        region_1 = (_b.sent()).data;
+                        regionName = region_1.name.replace(/ /g, '_');
+                        return [4 /*yield*/, this.jove.resetOutdated(regionName)];
+                    case 6:
+                        _b.sent();
+                        return [4 /*yield*/, this.jove.getForRegion(regionName)];
+                    case 7:
+                        joveRegionalInfo = _b.sent();
+                        str = '';
+                        link = [];
+                        for (key in joveRegionalInfo) {
+                            if (joveRegionalInfo.hasOwnProperty(key)) {
+                                link.push(key);
+                                systems = '';
+                                systems = joveRegionalInfo[key].whs.join(',');
+                                if (systems === '')
+                                    systems = '-';
+                                date = void 0;
+                                if (joveRegionalInfo[key].updated === '') {
+                                    date = '';
+                                }
+                                else {
+                                    dateObj = new Date(joveRegionalInfo[key].updated);
+                                    date = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                                        ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC';
+                                }
+                                str += key + ': ' + systems + ' [' + date + ']\n';
+                            }
+                        }
+                        interaction.reply({ ephemeral: !show_to_all, content: region_1.name + ':```' + str + '```https://evemaps.dotlan.net/map/' + regionName + '/' + link.join(':') });
+                        return [3 /*break*/, 10];
+                    case 8: return [4 /*yield*/, interaction.reply('Could not find region matching `' + region + '`.')];
+                    case 9:
+                        _b.sent();
+                        _b.label = 10;
+                    case 10: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Show;
 }(CommandInterface_1.default));

@@ -60,6 +60,9 @@ var JoveAdd = /** @class */ (function (_super) {
     function JoveAdd() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    JoveAdd.prototype.registerCommand = function () {
+        return null;
+    };
     JoveAdd.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var systemSearchName, ids, solarSystemId, esiSystemData, systemName, systemId, esiConstellationData, esiRegionData, regionName, existence, rundown;
@@ -124,6 +127,9 @@ var JoveAdd = /** @class */ (function (_super) {
     };
     JoveAdd.prototype.getAccessLevel = function () {
         return 1;
+    };
+    JoveAdd.prototype.executeInteraction = function (interaction) {
+        return Promise.resolve(undefined);
     };
     return JoveAdd;
 }(CommandInterface_1.default));

@@ -55,11 +55,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Route = /** @class */ (function (_super) {
     __extends(Route, _super);
-    function Route() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Route(esi, jove, logger, fas) {
+        var _this = _super.call(this, esi, jove, logger) || this;
+        _this.fas = fas;
+        return _this;
     }
+    Route.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('route')
+            .setDescription('Finds a route between two regions')
+            .addStringOption(function (option) {
+            return option.setName('region1')
+                .setDescription('First region name')
+                .setRequired(true)
+                .setAutocomplete(true);
+        })
+            .addStringOption(function (option) {
+            return option.setName('region2')
+                .setDescription('Second region name')
+                .setRequired(true)
+                .setAutocomplete(true);
+        });
+    };
     Route.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var regions, loc1, loc2, doneFirst, _loop_1, this_1, _i, regions_1, e, state_1, pairs, pad1, pad2, pad, response, parts;
@@ -204,6 +224,161 @@ var Route = /** @class */ (function (_super) {
     };
     Route.prototype.capitalizeFirstLetter = function (str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    Route.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            var focus_1, filtered, filtered, region1, region2, regions, loc1_1, loc2_1, doneFirst_1, _loop_3, this_2, _i, regions_2, e, state_2, pairs_1, pad1, pad2, pad_1, response, parts_2;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!interaction.isAutocomplete()) return [3 /*break*/, 1];
+                        focus_1 = interaction.options.getFocused(true);
+                        if (focus_1.name === 'region1') {
+                            filtered = this.fas.getRegions().filter(function (e) { return e.toLowerCase().startsWith(focus_1.value.toLowerCase()); }).slice(0, 25);
+                            interaction.respond(filtered.map(function (choices) { return ({ name: choices, value: choices }); }));
+                        }
+                        else if (focus_1.name === 'region2') {
+                            filtered = this.fas.getRegions().filter(function (e) { return e.toLowerCase().startsWith(focus_1.value.toLowerCase()); }).slice(0, 25);
+                            interaction.respond(filtered.map(function (choices) { return ({ name: choices, value: choices }); }));
+                        }
+                        return [3 /*break*/, 11];
+                    case 1:
+                        if (!interaction.isCommand()) return [3 /*break*/, 11];
+                        region1 = interaction.options.getString('region1');
+                        region2 = interaction.options.getString('region2');
+                        regions = [region1, region2];
+                        if (!(regions.length !== 2)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, interaction.reply({ content: 'Insufficient region information', ephemeral: true })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                    case 3:
+                        loc1_1 = [];
+                        loc2_1 = [];
+                        doneFirst_1 = false;
+                        _loop_3 = function (e) {
+                            var parts_3, region, joves_2, _loop_4, key, e_2;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        parts_3 = e.split(' ');
+                                        parts_3.forEach(function (e, i) { return parts_3[i] = _this.capitalizeFirstLetter(e.toLowerCase()); });
+                                        region = parts_3.join('_');
+                                        return [4 /*yield*/, this_2.jove.resetOutdated(region)];
+                                    case 1:
+                                        _b.sent();
+                                        _b.label = 2;
+                                    case 2:
+                                        _b.trys.push([2, 4, , 6]);
+                                        return [4 /*yield*/, this_2.jove.getForRegion(region)];
+                                    case 3:
+                                        joves_2 = _b.sent();
+                                        _loop_4 = function (key) {
+                                            joves_2[key].whs.forEach(function (e) {
+                                                if (!doneFirst_1) {
+                                                    loc1_1.push({
+                                                        updated: joves_2[key].updated,
+                                                        name: key,
+                                                        wh: e.replace('-', ''),
+                                                        crit: e.includes('-')
+                                                    });
+                                                }
+                                                else {
+                                                    loc2_1.push({
+                                                        updated: joves_2[key].updated,
+                                                        name: key,
+                                                        wh: e.replace('-', ''),
+                                                        crit: e.includes('-')
+                                                    });
+                                                }
+                                            });
+                                        };
+                                        for (key in joves_2) {
+                                            _loop_4(key);
+                                        }
+                                        return [3 /*break*/, 6];
+                                    case 4:
+                                        e_2 = _b.sent();
+                                        return [4 /*yield*/, interaction.reply({
+                                                content: "Failed to load data for region `".concat(region, "`"),
+                                                ephemeral: true
+                                            })];
+                                    case 5:
+                                        _b.sent();
+                                        return [2 /*return*/, { value: void 0 }];
+                                    case 6:
+                                        doneFirst_1 = true;
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        this_2 = this;
+                        _i = 0, regions_2 = regions;
+                        _a.label = 4;
+                    case 4:
+                        if (!(_i < regions_2.length)) return [3 /*break*/, 7];
+                        e = regions_2[_i];
+                        return [5 /*yield**/, _loop_3(e)];
+                    case 5:
+                        state_2 = _a.sent();
+                        if (typeof state_2 === "object")
+                            return [2 /*return*/, state_2.value];
+                        _a.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 4];
+                    case 7:
+                        pairs_1 = [];
+                        loc1_1.forEach(function (e) {
+                            var matches = loc2_1.filter(function (f) { return e.wh === f.wh; });
+                            matches.forEach(function (f) {
+                                pairs_1.push({
+                                    one_updated: e.updated,
+                                    one_name: e.name,
+                                    one_crit: e.crit,
+                                    two_updated: f.updated,
+                                    two_name: f.name,
+                                    two_crit: f.crit,
+                                    wh: e.wh
+                                });
+                            });
+                        });
+                        pad1 = Math.max.apply(Math, loc1_1.map(function (e) { return e.name.length; })) + 1;
+                        pad2 = Math.max.apply(Math, loc2_1.map(function (e) { return e.name.length; })) + 1;
+                        pad_1 = Math.max(pad1, pad2, regions[0].length, regions[1].length);
+                        response = "```".concat(regions[0].padEnd(pad_1, ' '), " <=====> ").concat(regions[1].padEnd(pad_1, ' '), "| Oldest\n").concat(''.padEnd(((pad_1 * 2) + 9), '='), "+").concat(''.padEnd(20, '='), "\n");
+                        parts_2 = [];
+                        if (!(pairs_1.length === 0)) return [3 /*break*/, 9];
+                        return [4 /*yield*/, interaction.reply({ content: 'No WH pairs found!', ephemeral: true })];
+                    case 8:
+                        _a.sent();
+                        return [2 /*return*/];
+                    case 9:
+                        pairs_1.forEach(function (e) {
+                            var dateObj;
+                            if (e.one_updated > e.two_updated) {
+                                dateObj = new Date(e.two_updated);
+                            }
+                            else {
+                                dateObj = new Date(e.one_updated);
+                            }
+                            var date = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC';
+                            var one_crit = e.one_crit ? '-' : ' ';
+                            var two_crit = e.two_crit ? '-' : ' ';
+                            parts_2.push("".concat(e.one_name.padEnd(pad_1, ' '), " <=").concat(one_crit).concat(e.wh).concat(two_crit, "=> ").concat(e.two_name.padEnd(pad_1, ' '), "|").concat(date));
+                        });
+                        response += parts_2.join('\n');
+                        response += '```';
+                        return [4 /*yield*/, interaction.reply({ content: response, ephemeral: true })];
+                    case 10:
+                        _a.sent();
+                        _a.label = 11;
+                    case 11: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Route;
 }(CommandInterface_1.default));

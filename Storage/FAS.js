@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var FAS = /** @class */ (function () {
     function FAS(jove) {
         this.db = [];
+        this.regions = [];
         this.jove = jove;
     }
     FAS.prototype.reindex = function () {
@@ -53,6 +54,7 @@ var FAS = /** @class */ (function () {
                         regions = _f.sent();
                         for (_i = 0, _a = Object.entries(regions); _i < _a.length; _i++) {
                             _b = _a[_i], region = _b[0], regionData = _b[1];
+                            this.regions.push(region.replaceAll('_', ' '));
                             for (_c = 0, _d = Object.entries(regionData); _c < _d.length; _c++) {
                                 _e = _d[_c], system = _e[0], systemData = _e[1];
                                 this.db.push(system);
@@ -83,8 +85,18 @@ var FAS = /** @class */ (function () {
             });
         });
     };
+    FAS.prototype.search = function (system) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.db.filter(function (e) { return e.toLowerCase().startsWith(system.toLowerCase()); })];
+            });
+        });
+    };
     FAS.prototype.getLength = function () {
         return this.db.length;
+    };
+    FAS.prototype.getRegions = function () {
+        return this.regions;
     };
     FAS.capitalizeFirstLetter = function (str) {
         return str.charAt(0).toUpperCase() + str.slice(1);

@@ -64,11 +64,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Summary = /** @class */ (function (_super) {
     __extends(Summary, _super);
     function Summary() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Summary.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('summary')
+            .setDescription('Shows a summary of the current state of the Drifter WHs in the current channel');
+    };
     Summary.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var regionalData, regions, regionKey, scanned, hasWh, whs, region, systemName, system, headline, str, regionalDataKey, regionData, i, j, chunk, chunks, i_1, regStr;
@@ -90,7 +96,7 @@ var Summary = /** @class */ (function (_super) {
                                 for (systemName in region) {
                                     if (region.hasOwnProperty(systemName)) {
                                         system = region[systemName];
-                                        if (system.updated !== "") {
+                                        if (system.updated !== '') {
                                             scanned++;
                                         }
                                         if (system.whs.length) {
@@ -107,12 +113,12 @@ var Summary = /** @class */ (function (_super) {
                                 };
                             }
                         }
-                        headline = ("Region").toString().padEnd(20, " ") + "|Total|Scanned|Has WH|WHs\n";
+                        headline = ('Region').toString().padEnd(20, ' ') + '|Total|Scanned|Has WH|WHs\n';
                         str = [];
                         for (regionalDataKey in regionalData) {
                             if (regionalData.hasOwnProperty(regionalDataKey)) {
                                 regionData = regionalData[regionalDataKey];
-                                str.push((regionalDataKey).toString().padEnd(20, " ") + "|" + (regionData.total).toString().padStart(5, " ") + "|" + (regionData.scanned).toString().padStart(7, " ") + "|" + (regionData.hasWh).toString().padStart(6, " ") + "|" + (regionData.whs.join(",")).toString() + "\n");
+                                str.push((regionalDataKey).toString().padEnd(20, ' ') + '|' + (regionData.total).toString().padStart(5, ' ') + '|' + (regionData.scanned).toString().padStart(7, ' ') + '|' + (regionData.hasWh).toString().padStart(6, ' ') + '|' + (regionData.whs.join(',')).toString() + '\n');
                             }
                         }
                         chunk = 30, chunks = [];
@@ -127,7 +133,7 @@ var Summary = /** @class */ (function (_super) {
                     case 4:
                         if (!(i_1 < chunks.length)) return [3 /*break*/, 7];
                         regStr = chunks[i_1];
-                        return [4 /*yield*/, message.channel.send('```' + headline + ("+".padStart(20 + 1, "-") + "+".padStart(5 + 1, "-") + "+".padStart(7 + 1, "-") + "+".padStart(6 + 1, "-") + "".padStart(10, "-") + "\n") + regStr.join("") + '```')];
+                        return [4 /*yield*/, message.channel.send('```' + headline + ('+'.padStart(20 + 1, '-') + '+'.padStart(5 + 1, '-') + '+'.padStart(7 + 1, '-') + '+'.padStart(6 + 1, '-') + ''.padStart(10, '-') + '\n') + regStr.join('') + '```')];
                     case 5:
                         _a.sent();
                         _a.label = 6;
@@ -140,10 +146,107 @@ var Summary = /** @class */ (function (_super) {
         });
     };
     Summary.prototype.help = function () {
-        return { name: "`summary`", value: "Provides a summary of known data." };
+        return { name: '`summary`', value: 'Provides a summary of known data.' };
     };
     Summary.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Summary.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            var regionalData, regions, regionKey, scanned, hasWh, whs, region, systemName, system, headline_1, str, regionalDataKey, regionData, i, j, chunk, chunks_1, channelMgr;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!interaction.isCommand()) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.jove.resetOutdated()];
+                    case 1:
+                        _a.sent();
+                        regionalData = {};
+                        return [4 /*yield*/, this.jove.getRegions()];
+                    case 2:
+                        regions = _a.sent();
+                        for (regionKey in regions) {
+                            if (regions.hasOwnProperty(regionKey)) {
+                                scanned = 0;
+                                hasWh = 0;
+                                whs = [];
+                                region = regions[regionKey];
+                                for (systemName in region) {
+                                    if (region.hasOwnProperty(systemName)) {
+                                        system = region[systemName];
+                                        if (system.updated !== '') {
+                                            scanned++;
+                                        }
+                                        if (system.whs.length) {
+                                            hasWh++;
+                                            whs = __spreadArray(__spreadArray([], whs, true), system.whs, true);
+                                        }
+                                    }
+                                }
+                                regionalData[regionKey] = {
+                                    scanned: scanned,
+                                    hasWh: hasWh,
+                                    total: Object.keys(region).length,
+                                    whs: whs
+                                };
+                            }
+                        }
+                        headline_1 = ('Region').toString().padEnd(20, ' ') + '|Total|Scanned|Has WH|WHs\n';
+                        str = [];
+                        for (regionalDataKey in regionalData) {
+                            if (regionalData.hasOwnProperty(regionalDataKey)) {
+                                regionData = regionalData[regionalDataKey];
+                                str.push((regionalDataKey).toString().padEnd(20, ' ') + '|' + (regionData.total).toString().padStart(5, ' ') + '|' + (regionData.scanned).toString().padStart(7, ' ') + '|' + (regionData.hasWh).toString().padStart(6, ' ') + '|' + (regionData.whs.join(',')).toString() + '\n');
+                            }
+                        }
+                        i = void 0, j = void 0, chunk = 30, chunks_1 = [];
+                        for (i = 0, j = str.length; i < j; i += chunk) {
+                            chunks_1.push(str.slice(i, i + chunk));
+                        }
+                        channelMgr = interaction.client.channels;
+                        return [4 /*yield*/, interaction.reply({ content: 'Sending summary to channel...', ephemeral: true })];
+                    case 3:
+                        _a.sent();
+                        channelMgr.fetch(interaction.channelId).then(function (channel) { return __awaiter(_this, void 0, void 0, function () {
+                            var i_2, regStr, e_1;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        _a.trys.push([0, 6, , 9]);
+                                        return [4 /*yield*/, channel.send('**Summary**')];
+                                    case 1:
+                                        _a.sent();
+                                        i_2 = 0;
+                                        _a.label = 2;
+                                    case 2:
+                                        if (!(i_2 < chunks_1.length)) return [3 /*break*/, 5];
+                                        regStr = chunks_1[i_2];
+                                        return [4 /*yield*/, channel.send('```' + headline_1 + ('+'.padStart(20 + 1, '-') + '+'.padStart(5 + 1, '-') + '+'.padStart(7 + 1, '-') + '+'.padStart(6 + 1, '-') + ''.padStart(10, '-') + '\n') + regStr.join('') + '```')];
+                                    case 3:
+                                        _a.sent();
+                                        _a.label = 4;
+                                    case 4:
+                                        i_2++;
+                                        return [3 /*break*/, 2];
+                                    case 5: return [3 /*break*/, 9];
+                                    case 6:
+                                        e_1 = _a.sent();
+                                        if (!(e_1.message === 'Missing Access')) return [3 /*break*/, 8];
+                                        return [4 /*yield*/, interaction.reply({ content: 'I need the `SEND_MESSAGES` permission in this channel to do that!', ephemeral: true })];
+                                    case 7:
+                                        _a.sent();
+                                        _a.label = 8;
+                                    case 8: return [3 /*break*/, 9];
+                                    case 9: return [2 /*return*/];
+                                }
+                            });
+                        }); });
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Summary;
 }(CommandInterface_1.default));

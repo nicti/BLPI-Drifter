@@ -3,6 +3,10 @@ import {Message} from "discord.js";
 
 export default class Closest extends CommandInterface {
 
+    registerCommand() {
+        return null;
+    }
+
     async execute(message: Message, data: string[]): Promise<any> {
         // find system
         let systemSearchName = data.join(' ');
@@ -60,6 +64,10 @@ export default class Closest extends CommandInterface {
 
     getAccessLevel(): number {
         return 0;
+    }
+
+    executeInteraction (interaction: any): Promise<any> {
+        return Promise.resolve(undefined)
     }
 
 }

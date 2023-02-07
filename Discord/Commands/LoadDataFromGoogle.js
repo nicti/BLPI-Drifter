@@ -60,6 +60,9 @@ var LoadDataFromGoogle = /** @class */ (function (_super) {
     function LoadDataFromGoogle() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    LoadDataFromGoogle.prototype.registerCommand = function () {
+        return null;
+    };
     LoadDataFromGoogle.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -88,6 +91,9 @@ var LoadDataFromGoogle = /** @class */ (function (_super) {
     };
     LoadDataFromGoogle.prototype.getAccessLevel = function () {
         return 1;
+    };
+    LoadDataFromGoogle.prototype.executeInteraction = function (interaction) {
+        return Promise.resolve(undefined);
     };
     return LoadDataFromGoogle;
 }(CommandInterface_1.default));

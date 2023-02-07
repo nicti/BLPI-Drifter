@@ -1,4 +1,4 @@
-import {DMChannel, Message, MessageReaction, Snowflake, User} from "discord.js";
+import { CacheType, DMChannel, Interaction, Message, MessageReaction, Snowflake, User } from 'discord.js'
 import {AxiosInstance} from "axios";
 import JoveStorage from "../../Storage/JoveStorage";
 import AdvancedLogger from "../../utils/AdvancedLogger";
@@ -25,6 +25,10 @@ export default abstract class CommandInterface implements CommandInterfaceInterf
     abstract help(): { name: string, value: string };
 
     abstract getAccessLevel(): number
+
+    abstract registerCommand(): any;
+
+    abstract executeInteraction(interaction: Interaction<CacheType>|any): Promise<any>;
 
     public async provideYesNoPrompt(message: Message, question: string): Promise<boolean> {
         let reactiveMsg = await message.reply(question);

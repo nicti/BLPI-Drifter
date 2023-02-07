@@ -65,6 +65,9 @@ var Health = /** @class */ (function (_super) {
         _this.pings = pings;
         return _this;
     }
+    Health.prototype.registerCommand = function () {
+        return null;
+    };
     Health.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var attachment, info, esiHealth, embeded, dateObj, dateString;
@@ -111,6 +114,9 @@ var Health = /** @class */ (function (_super) {
     };
     Health.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Health.prototype.executeInteraction = function (interaction) {
+        return Promise.resolve(undefined);
     };
     return Health;
 }(CommandInterface_1.default));

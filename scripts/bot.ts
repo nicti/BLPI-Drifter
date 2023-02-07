@@ -1,4 +1,4 @@
-import {Client, Intents, Message, Snowflake} from "discord.js";
+import { Client, Intents, Message, Snowflake } from 'discord.js'
 import axios from "axios";
 import JoveStorage from "../Storage/JoveStorage";
 import { config } from 'dotenv-flow';
@@ -6,6 +6,7 @@ import Commands from "../Discord/Commands";
 import Pings from "../Bot/Pings";
 import FAS from "../Storage/FAS";
 import AdvancedLogger from "../utils/AdvancedLogger";
+
 
 config();
 
@@ -97,4 +98,19 @@ client.on('messageCreate', async (message: Message) => {
         return commandHandler.processMessage(message);
     }
 });
+client.on('interactionCreate', interaction => {
+    if (typeof process.env.ALLOWED_CHANNELS === "undefined") {
+        logger.error('ALLOWED_CHANNELS has to be defined in .env!');
+        return;
+    }
+    const channelId = interaction.channelId;
+    if (channelId === null) {
+        logger.info('Interaction was not in a channel! (DM?)');
+        return;
+    }
+    if (!process.env.ALLOWED_CHANNELS.split(',').includes(channelId)) {
+        return;
+    }
+    commandHandler.processInteraction(interaction);
+})
 client.login(process.env.BOT_TOKEN).catch(logger.error);

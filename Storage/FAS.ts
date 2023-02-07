@@ -3,10 +3,12 @@ import {sys} from "ping";
 
 export default class FAS {
   db: Array<string>
+  regions: Array<string>
   jove: JoveStorage
 
   constructor(jove: JoveStorage) {
     this.db = []
+    this.regions = []
     this.jove = jove
   }
 
@@ -14,6 +16,7 @@ export default class FAS {
     this.db = [];
     let regions = await this.jove.getRegions();
     for (const [region, regionData] of Object.entries(regions) as [string, any]) {
+      this.regions.push(region.replaceAll('_', ' '))
       for (const [system, systemData] of Object.entries(regionData) as [string, any]) {
         this.db.push(system);
       }
@@ -37,8 +40,16 @@ export default class FAS {
     return originalSystem;
   }
 
+  public async search (system: string): Promise<string[]> {
+    return this.db.filter((e: string) => e.toLowerCase().startsWith(system.toLowerCase()))
+  }
+
   public getLength() {
     return this.db.length;
+  }
+
+  public getRegions() {
+    return this.regions;
   }
 
   private static capitalizeFirstLetter(str: string) {

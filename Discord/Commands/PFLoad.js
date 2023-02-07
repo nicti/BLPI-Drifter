@@ -68,6 +68,12 @@ var PFLoad = /** @class */ (function (_super) {
         });
         return _this;
     }
+    PFLoad.prototype.executeInteraction = function (interaction) {
+        throw new Error("Method not implemented.");
+    };
+    PFLoad.prototype.registerCommand = function () {
+        return null;
+    };
     PFLoad.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;

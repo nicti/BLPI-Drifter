@@ -3,6 +3,10 @@ import {Message} from "discord.js";
 
 export default class LoadDataFromGoogle extends CommandInterface {
 
+    registerCommand() {
+        return null;
+    }
+
     async execute(message: Message, data: string[]): Promise<any> {
         // As CCP disabled the search endpoint for public usage, this function can no longer run reliably
         /*let allowed = await this.provideYesNoPrompt(message,'Are you sure you want to reload all the data? This will delete saved data!');
@@ -18,6 +22,10 @@ export default class LoadDataFromGoogle extends CommandInterface {
 
     getAccessLevel(): number {
         return 1;
+    }
+
+    executeInteraction (interaction: any): Promise<any> {
+        return Promise.resolve(undefined)
     }
 
 }

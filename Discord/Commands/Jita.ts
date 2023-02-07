@@ -1,7 +1,29 @@
 import CommandInterface from './CommandInterface'
 import { Message } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { AxiosInstance } from 'axios'
+import JoveStorage from '../../Storage/JoveStorage'
+import AdvancedLogger from '../../utils/AdvancedLogger'
+import FAS from '../../Storage/FAS'
 
 export default class Jita extends CommandInterface {
+
+    fas: FAS
+    constructor (esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger, fas: FAS) {
+        super(esi, jove, logger)
+        this.fas = fas
+    }
+    registerCommand() {
+        return new SlashCommandBuilder()
+            .setName('jita')
+            .setDescription('Finds a route between a region and Jita (The Forge, Lonetrek, The Citadel)')
+            .addStringOption(option =>
+                option.setName('region')
+                    .setDescription('Region name')
+                    .setRequired(true)
+                    .setAutocomplete(true)
+            )
+    }
     help (): { name: string; value: string } {
         return {
             name: '`jita <region>`',
@@ -37,6 +59,7 @@ export default class Jita extends CommandInterface {
             })
         }
         for (const key of [ 'The_Forge', 'Lonetrek', 'The_Citadel' ]) {
+            await this.jove.resetOutdated(key)
             const joves = await this.jove.getForRegion(key)
             for (const key in joves) {
                 joves[key].whs.forEach((e: any) => {
@@ -93,5 +116,93 @@ export default class Jita extends CommandInterface {
 
     private capitalizeFirstLetter (str: string) {
         return str.charAt(0).toUpperCase() + str.slice(1)
+    }
+
+    async executeInteraction (interaction: any): Promise<any> {
+        if (interaction.isAutocomplete()) {
+            const focus = interaction.options.getFocused(true)
+            if (focus.name === 'region') {
+                const filtered = this.fas.getRegions().filter(e => e.toLowerCase().startsWith(focus.value.toLowerCase())).slice(0, 25)
+                interaction.respond(
+                    filtered.map((choices) => ({ name: choices, value: choices }))
+                )
+            }
+        } else if (interaction.isCommand()) {
+            const region = interaction.options.getString('region', true).replaceAll(' ', '_')
+            await this.jove.resetOutdated(region)
+            let joves: any
+            try {
+                joves = await this.jove.getForRegion(region)
+            } catch (e) {
+                await interaction.reply({content: `Failed to load data for region \`${region}\``, ephemeral: true})
+                return
+            }
+            let loc1: any = []
+            let loc2: any = []
+            for (const key in joves) {
+                joves[key].whs.forEach((e: any) => {
+                    loc2.push({
+                        updated: joves[key].updated,
+                        name: key,
+                        wh: e.replace('-', ''),
+                        crit: e.includes('-')
+                    })
+                })
+            }
+            for (const key of [ 'The_Forge', 'Lonetrek', 'The_Citadel' ]) {
+                await this.jove.resetOutdated(key)
+                const joves = await this.jove.getForRegion(key)
+                for (const key in joves) {
+                    joves[key].whs.forEach((e: any) => {
+                        loc1.push({
+                            updated: joves[key].updated,
+                            name: key,
+                            wh: e.replace('-', ''),
+                            crit: e.includes('-')
+                        })
+                    })
+                }
+            }
+            let pairs: any[] = []
+            loc1.forEach((e: { updated: number, name: string, wh: string, crit: boolean }) => {
+                let matches = loc2.filter((f: { updated: number, name: string, wh: string, crit: boolean }) => e.wh === f.wh)
+                matches.forEach((f: { updated: number, name: string, wh: string, crit: boolean }) => {
+                    pairs.push({
+                        one_updated: e.updated,
+                        one_name: e.name,
+                        one_crit: e.crit,
+                        two_updated: f.updated,
+                        two_name: f.name,
+                        two_crit: f.crit,
+                        wh: e.wh
+                    })
+                })
+            })
+            let pad1 = Math.max(...loc1.map((e: any) => e.name.length)) + 1
+            let pad2 = Math.max(...loc2.map((e: any) => e.name.length)) + 1
+            let pad = Math.max(pad1, pad2, 4, region.length)
+            let response = `\`\`\`${'Jita'.padEnd(pad, ' ')} <=====> ${region.padEnd(pad, ' ')}| Oldest\n${''.padEnd(((pad * 2) + 9), '=')}+${''.padEnd(20, '=')}\n`
+            let parts: string[] = []
+            if (pairs.length === 0) {
+                await interaction.reply({content: 'No WH pairs found!', ephemeral: true})
+                return
+            }
+            pairs.forEach((e: { one_updated: number, one_name: string, one_crit: boolean, two_updated: number, two_name: string, two_crit: boolean, wh: string }) => {
+                let dateObj
+                if (e.one_updated > e.two_updated) {
+                    dateObj = new Date(e.two_updated)
+                } else {
+                    dateObj = new Date(e.one_updated)
+                }
+                let date = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                    ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC'
+                const one_crit = e.one_crit ? '-' : ' '
+                const two_crit = e.two_crit ? '-' : ' '
+                parts.push(`${e.one_name.padEnd(pad, ' ')} <=${one_crit}${e.wh}${two_crit}=> ${e.two_name.padEnd(pad, ' ')}|${date}`)
+            })
+            response += parts.join('\n')
+            response += '```'
+            await interaction.reply({content: response, ephemeral: true})
+        }
     }
 }

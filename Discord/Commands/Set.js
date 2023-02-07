@@ -55,6 +55,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Set = /** @class */ (function (_super) {
     __extends(Set, _super);
     function Set(esi, jove, logger, fas) {
@@ -97,10 +98,67 @@ var Set = /** @class */ (function (_super) {
         });
     };
     Set.prototype.help = function () {
-        return { name: "`set <system> <pipe split WH identifier>`", value: "Sets drifter info for a certain system. Use letter for WH identifier. Concat - for EOL/crit. E.g.: `set Jita C|C-`" };
+        return {
+            name: '`set <system> <pipe split WH identifier>`',
+            value: 'Sets drifter info for a certain system. Use letter for WH identifier. Concat - for EOL/crit. E.g.: `set Jita C|C-`'
+        };
     };
     Set.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Set.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('set')
+            .setDescription('Sets drifter info for a certain system. Use letter for WH identifier. Concat - for EOL/crit.')
+            .addStringOption(function (option) {
+            return option.setName('system')
+                .setDescription('System name')
+                .setRequired(true)
+                .setAutocomplete(true);
+        })
+            .addStringOption(function (option) {
+            return option.setName('whs')
+                .setDescription('Pipe split WH identifier')
+                .setRequired(true);
+        });
+    };
+    Set.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            var focus_1, filtered, system, whs, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!interaction.isAutocomplete()) return [3 /*break*/, 3];
+                        focus_1 = interaction.options.getFocused(true);
+                        if (!(focus_1.name === 'system')) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.fas.search(focus_1.value)];
+                    case 1:
+                        filtered = (_a.sent()).slice(0, 25);
+                        interaction.respond(filtered.map(function (choices) { return ({ name: choices, value: choices }); }));
+                        _a.label = 2;
+                    case 2: return [3 /*break*/, 8];
+                    case 3:
+                        if (!interaction.isCommand()) return [3 /*break*/, 8];
+                        system = interaction.options.getString('system', true);
+                        whs = interaction.options.getString('whs', true);
+                        return [4 /*yield*/, this.jove.setWHs(system, whs.split('|'))];
+                    case 4:
+                        result = _a.sent();
+                        if (!(result === true)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, interaction.reply({ content: "Successfully set ".concat(system, " to ").concat(whs), ephemeral: true })];
+                    case 5:
+                        _a.sent();
+                        return [3 /*break*/, 8];
+                    case 6:
+                        if (!(typeof result === 'string')) return [3 /*break*/, 8];
+                        return [4 /*yield*/, interaction.reply({ content: result, ephemeral: true })];
+                    case 7:
+                        _a.sent();
+                        _a.label = 8;
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Set;
 }(CommandInterface_1.default));

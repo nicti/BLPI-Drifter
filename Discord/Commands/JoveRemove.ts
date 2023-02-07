@@ -3,6 +3,10 @@ import {Message} from "discord.js";
 
 export default class JoveRemove extends CommandInterface {
 
+  registerCommand() {
+    return null;
+  }
+
   async execute(message: Message, data: string[]): Promise<any> {
     let systemSearchName = data.join(' ');
     let ids = (await this.esi.post('/v1/universe/ids/',[systemSearchName])).data
@@ -39,6 +43,10 @@ export default class JoveRemove extends CommandInterface {
 
   help(): { name: string; value: string } {
     return {name: "`joveremove <system>`", value: "Removes a system from the list of jove systems"};
+  }
+
+  executeInteraction (interaction: any): Promise<any> {
+    return Promise.resolve(undefined)
   }
 
 }

@@ -55,11 +55,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Jita = /** @class */ (function (_super) {
     __extends(Jita, _super);
-    function Jita() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Jita(esi, jove, logger, fas) {
+        var _this = _super.call(this, esi, jove, logger) || this;
+        _this.fas = fas;
+        return _this;
     }
+    Jita.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('jita')
+            .setDescription('Finds a route between a region and Jita (The Forge, Lonetrek, The Citadel)')
+            .addStringOption(function (option) {
+            return option.setName('region')
+                .setDescription('Region name')
+                .setRequired(true)
+                .setAutocomplete(true);
+        });
+    };
     Jita.prototype.help = function () {
         return {
             name: '`jita <region>`',
@@ -114,8 +128,11 @@ var Jita = /** @class */ (function (_super) {
                             var joves_1, _loop_3, key_1;
                             return __generator(this, function (_c) {
                                 switch (_c.label) {
-                                    case 0: return [4 /*yield*/, this_1.jove.getForRegion(key)];
+                                    case 0: return [4 /*yield*/, this_1.jove.resetOutdated(key)];
                                     case 1:
+                                        _c.sent();
+                                        return [4 /*yield*/, this_1.jove.getForRegion(key)];
+                                    case 2:
                                         joves_1 = _c.sent();
                                         _loop_3 = function (key_1) {
                                             joves_1[key_1].whs.forEach(function (e) {
@@ -200,6 +217,146 @@ var Jita = /** @class */ (function (_super) {
     };
     Jita.prototype.capitalizeFirstLetter = function (str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    Jita.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            var focus_1, filtered, region, joves_2, e_2, loc1_1, loc2_1, _loop_4, key, _loop_5, this_2, _i, _a, key, pairs_1, pad1, pad2, pad_1, response, parts_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!interaction.isAutocomplete()) return [3 /*break*/, 1];
+                        focus_1 = interaction.options.getFocused(true);
+                        if (focus_1.name === 'region') {
+                            filtered = this.fas.getRegions().filter(function (e) { return e.toLowerCase().startsWith(focus_1.value.toLowerCase()); }).slice(0, 25);
+                            interaction.respond(filtered.map(function (choices) { return ({ name: choices, value: choices }); }));
+                        }
+                        return [3 /*break*/, 15];
+                    case 1:
+                        if (!interaction.isCommand()) return [3 /*break*/, 15];
+                        region = interaction.options.getString('region', true).replaceAll(' ', '_');
+                        return [4 /*yield*/, this.jove.resetOutdated(region)];
+                    case 2:
+                        _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, , 7]);
+                        return [4 /*yield*/, this.jove.getForRegion(region)];
+                    case 4:
+                        joves_2 = _b.sent();
+                        return [3 /*break*/, 7];
+                    case 5:
+                        e_2 = _b.sent();
+                        return [4 /*yield*/, interaction.reply({ content: "Failed to load data for region `".concat(region, "`"), ephemeral: true })];
+                    case 6:
+                        _b.sent();
+                        return [2 /*return*/];
+                    case 7:
+                        loc1_1 = [];
+                        loc2_1 = [];
+                        _loop_4 = function (key) {
+                            joves_2[key].whs.forEach(function (e) {
+                                loc2_1.push({
+                                    updated: joves_2[key].updated,
+                                    name: key,
+                                    wh: e.replace('-', ''),
+                                    crit: e.includes('-')
+                                });
+                            });
+                        };
+                        for (key in joves_2) {
+                            _loop_4(key);
+                        }
+                        _loop_5 = function (key) {
+                            var joves_3, _loop_6, key_2;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
+                                    case 0: return [4 /*yield*/, this_2.jove.resetOutdated(key)];
+                                    case 1:
+                                        _c.sent();
+                                        return [4 /*yield*/, this_2.jove.getForRegion(key)];
+                                    case 2:
+                                        joves_3 = _c.sent();
+                                        _loop_6 = function (key_2) {
+                                            joves_3[key_2].whs.forEach(function (e) {
+                                                loc1_1.push({
+                                                    updated: joves_3[key_2].updated,
+                                                    name: key_2,
+                                                    wh: e.replace('-', ''),
+                                                    crit: e.includes('-')
+                                                });
+                                            });
+                                        };
+                                        for (key_2 in joves_3) {
+                                            _loop_6(key_2);
+                                        }
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        this_2 = this;
+                        _i = 0, _a = ['The_Forge', 'Lonetrek', 'The_Citadel'];
+                        _b.label = 8;
+                    case 8:
+                        if (!(_i < _a.length)) return [3 /*break*/, 11];
+                        key = _a[_i];
+                        return [5 /*yield**/, _loop_5(key)];
+                    case 9:
+                        _b.sent();
+                        _b.label = 10;
+                    case 10:
+                        _i++;
+                        return [3 /*break*/, 8];
+                    case 11:
+                        pairs_1 = [];
+                        loc1_1.forEach(function (e) {
+                            var matches = loc2_1.filter(function (f) { return e.wh === f.wh; });
+                            matches.forEach(function (f) {
+                                pairs_1.push({
+                                    one_updated: e.updated,
+                                    one_name: e.name,
+                                    one_crit: e.crit,
+                                    two_updated: f.updated,
+                                    two_name: f.name,
+                                    two_crit: f.crit,
+                                    wh: e.wh
+                                });
+                            });
+                        });
+                        pad1 = Math.max.apply(Math, loc1_1.map(function (e) { return e.name.length; })) + 1;
+                        pad2 = Math.max.apply(Math, loc2_1.map(function (e) { return e.name.length; })) + 1;
+                        pad_1 = Math.max(pad1, pad2, 4, region.length);
+                        response = "```".concat('Jita'.padEnd(pad_1, ' '), " <=====> ").concat(region.padEnd(pad_1, ' '), "| Oldest\n").concat(''.padEnd(((pad_1 * 2) + 9), '='), "+").concat(''.padEnd(20, '='), "\n");
+                        parts_1 = [];
+                        if (!(pairs_1.length === 0)) return [3 /*break*/, 13];
+                        return [4 /*yield*/, interaction.reply({ content: 'No WH pairs found!', ephemeral: true })];
+                    case 12:
+                        _b.sent();
+                        return [2 /*return*/];
+                    case 13:
+                        pairs_1.forEach(function (e) {
+                            var dateObj;
+                            if (e.one_updated > e.two_updated) {
+                                dateObj = new Date(e.two_updated);
+                            }
+                            else {
+                                dateObj = new Date(e.one_updated);
+                            }
+                            var date = dateObj.getUTCFullYear().toString() + '-' + (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '-' + (dateObj.getUTCDate()).toString().padStart(2, '0') +
+                                ' ' + dateObj.getUTCHours().toString().padStart(2, '0') + ':' + dateObj.getUTCMinutes().toString().padStart(2, '0') + ' UTC';
+                            var one_crit = e.one_crit ? '-' : ' ';
+                            var two_crit = e.two_crit ? '-' : ' ';
+                            parts_1.push("".concat(e.one_name.padEnd(pad_1, ' '), " <=").concat(one_crit).concat(e.wh).concat(two_crit, "=> ").concat(e.two_name.padEnd(pad_1, ' '), "|").concat(date));
+                        });
+                        response += parts_1.join('\n');
+                        response += '```';
+                        return [4 /*yield*/, interaction.reply({ content: response, ephemeral: true })];
+                    case 14:
+                        _b.sent();
+                        _b.label = 15;
+                    case 15: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Jita;
 }(CommandInterface_1.default));

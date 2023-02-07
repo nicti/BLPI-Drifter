@@ -40,6 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var discord_js_1 = require("discord.js");
+var rest_1 = require("@discordjs/rest");
+var v10_1 = require("discord-api-types/v10");
 var Show_1 = __importDefault(require("./Commands/Show"));
 var Set_1 = __importDefault(require("./Commands/Set"));
 var Find_1 = __importDefault(require("./Commands/Find"));
@@ -56,6 +58,7 @@ var Route_1 = __importDefault(require("./Commands/Route"));
 var Jita_1 = __importDefault(require("./Commands/Jita"));
 var Commands = /** @class */ (function () {
     function Commands(client, esi, jove, fas, logger, pings) {
+        var _this = this;
         var _a;
         this.client = client;
         this.esi = esi;
@@ -64,7 +67,7 @@ var Commands = /** @class */ (function () {
         this.logger = logger;
         this.pings = pings;
         this.commands = new Map();
-        this.commands.set('show', (new Show_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('show', (new Show_1.default(this.esi, this.jove, this.logger, this.fas)));
         this.commands.set('set', (new Set_1.default(this.esi, this.jove, this.logger, this.fas)));
         this.commands.set('find', (new Find_1.default(this.esi, this.jove, this.logger)));
         this.commands.set('loaddatafromgoogle', (new LoadDataFromGoogle_1.default(this.esi, this.jove, this.logger)));
@@ -76,13 +79,27 @@ var Commands = /** @class */ (function () {
         this.commands.set('joveremove', (new JoveRemove_1.default(this.esi, this.jove, this.logger)));
         this.commands.set('pfload', (new PFLoad_1.default(this.esi, this.jove, this.logger)));
         this.commands.set('changelog', (new Changelog_1.default(this.esi, this.jove, this.logger)));
-        this.commands.set('route', (new Route_1.default(this.esi, this.jove, this.logger)));
-        this.commands.set('jita', (new Jita_1.default(this.esi, this.jove, this.logger)));
+        this.commands.set('route', (new Route_1.default(this.esi, this.jove, this.logger, this.fas)));
+        this.commands.set('jita', (new Jita_1.default(this.esi, this.jove, this.logger, this.fas)));
         var admins = (_a = process.env.ADMINS) === null || _a === void 0 ? void 0 : _a.split(',');
         if (typeof admins === "undefined") {
             throw "Unable to find admins in .env file. Please specify admins in your .env file.";
         }
         this.admins = admins;
+        // Register slash commands
+        var rest = new rest_1.REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
+        var commands = [];
+        this.commands.forEach(function (command) {
+            var cmd = command.registerCommand();
+            if (cmd) {
+                commands.push(cmd);
+            }
+        });
+        if (commands.length > 0) {
+            rest.put(v10_1.Routes.applicationGuildCommands(process.env.APPLICATION_ID, process.env.COMMAND_GUILD_ID), { body: commands }).then(function () {
+                _this.logger.info('Successfully registered application commands.');
+            });
+        }
     }
     Commands.prototype.processMessage = function (message) {
         var _a, _b, _c, _d;
@@ -133,6 +150,15 @@ var Commands = /** @class */ (function () {
                 }
             });
         });
+    };
+    Commands.prototype.processInteraction = function (interaction) {
+        var cmd = this.commands.get(interaction.commandName);
+        if (cmd) {
+            cmd.executeInteraction(interaction);
+        }
+        else {
+            this.logger.warn('Unknown command: ' + interaction.commandName);
+        }
     };
     Commands.prototype.help = function (message) {
         return __awaiter(this, void 0, void 0, function () {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0-RC1
+### Changes
+* Add slash commands for most commands
+### Bugfix
+* Fix `jita` command to now properly reset regions before checking
+
 ## 1.2.0
 ### Changes
 * Added `jita` command to find routes between Jita and a region

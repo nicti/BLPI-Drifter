@@ -60,6 +60,9 @@ var Closest = /** @class */ (function (_super) {
     function Closest() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Closest.prototype.registerCommand = function () {
+        return null;
+    };
     Closest.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var systemSearchName, ids, solarSystemId, regions, pairs, _i, _a, _b, region, regionData, _c, _d, _e, system_1, systemData, i, j, chunk, chunks, routes, k, chunk_1, request, route, shortest, system, date, dateObj, whList, str;
@@ -147,6 +150,9 @@ var Closest = /** @class */ (function (_super) {
     };
     Closest.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Closest.prototype.executeInteraction = function (interaction) {
+        return Promise.resolve(undefined);
     };
     return Closest;
 }(CommandInterface_1.default));

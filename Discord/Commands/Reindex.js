@@ -55,6 +55,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandInterface_1 = __importDefault(require("./CommandInterface"));
+var builders_1 = require("@discordjs/builders");
 var Reindex = /** @class */ (function (_super) {
     __extends(Reindex, _super);
     function Reindex(esi, jove, logger, fas) {
@@ -62,6 +63,11 @@ var Reindex = /** @class */ (function (_super) {
         _this.fas = fas;
         return _this;
     }
+    Reindex.prototype.registerCommand = function () {
+        return new builders_1.SlashCommandBuilder()
+            .setName('reindex')
+            .setDescription('Rebuilds index for fast lookup of system names');
+    };
     Reindex.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -83,6 +89,24 @@ var Reindex = /** @class */ (function (_super) {
     };
     Reindex.prototype.getAccessLevel = function () {
         return 0;
+    };
+    Reindex.prototype.executeInteraction = function (interaction) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!interaction.isCommand()) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.fas.reindex()];
+                    case 1:
+                        if (!_a.sent()) return [3 /*break*/, 3];
+                        return [4 /*yield*/, interaction.reply({ content: 'Reindexing was successful', ephemeral: true })];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     return Reindex;
 }(CommandInterface_1.default));

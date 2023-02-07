@@ -60,6 +60,9 @@ var JoveRemove = /** @class */ (function (_super) {
     function JoveRemove() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    JoveRemove.prototype.registerCommand = function () {
+        return null;
+    };
     JoveRemove.prototype.execute = function (message, data) {
         return __awaiter(this, void 0, void 0, function () {
             var systemSearchName, ids, solarSystemId, esiSystemData, systemName, systemId, esiConstellationData, esiRegionData, regionName, existence, rundown;
@@ -124,6 +127,9 @@ var JoveRemove = /** @class */ (function (_super) {
     };
     JoveRemove.prototype.help = function () {
         return { name: "`joveremove <system>`", value: "Removes a system from the list of jove systems" };
+    };
+    JoveRemove.prototype.executeInteraction = function (interaction) {
+        return Promise.resolve(undefined);
     };
     return JoveRemove;
 }(CommandInterface_1.default));

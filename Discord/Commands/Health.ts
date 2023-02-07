@@ -12,6 +12,9 @@ export default class Health extends CommandInterface {
     fas: FAS;
     pings: Pings;
 
+    registerCommand() {
+        return null;
+    }
     constructor(esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger, client: Client, fas: FAS, pings: Pings) {
         super(esi,jove,logger);
         this.client = client;
@@ -53,6 +56,10 @@ export default class Health extends CommandInterface {
 
     getAccessLevel(): number {
         return 0;
+    }
+
+    executeInteraction (interaction: any): Promise<any> {
+        return Promise.resolve(undefined)
     }
 
 

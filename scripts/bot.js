@@ -160,4 +160,19 @@ client.on('messageCreate', function (message) { return __awaiter(void 0, void 0,
         }
     });
 }); });
+client.on('interactionCreate', function (interaction) {
+    if (typeof process.env.ALLOWED_CHANNELS === "undefined") {
+        logger.error('ALLOWED_CHANNELS has to be defined in .env!');
+        return;
+    }
+    var channelId = interaction.channelId;
+    if (channelId === null) {
+        logger.info('Interaction was not in a channel! (DM?)');
+        return;
+    }
+    if (!process.env.ALLOWED_CHANNELS.split(',').includes(channelId)) {
+        return;
+    }
+    commandHandler.processInteraction(interaction);
+});
 client.login(process.env.BOT_TOKEN).catch(logger.error);

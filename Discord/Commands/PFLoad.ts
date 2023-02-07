@@ -6,8 +6,15 @@ import JoveStorage from "../../Storage/JoveStorage";
 import AdvancedLogger from "../../utils/AdvancedLogger";
 
 export default class PFLoad extends CommandInterface {
+    executeInteraction(interaction: any): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
     connection: Connection;
     static drifterIds = [31000003,31000006,31000001,31000002,31000004]
+
+    registerCommand() {
+        return null;
+    }
     
     constructor(esi: AxiosInstance, jove: JoveStorage, logger: AdvancedLogger) {
         super(esi, jove, logger);
